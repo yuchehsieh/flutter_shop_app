@@ -17,7 +17,8 @@ class MyApp extends StatelessWidget {
 
     return ChangeNotifierProvider(
       builder: (ctx) => Products(),
-      child: isIOS ? MyCupertinoApp() : MyMaterialApp(),
+      // child: isIOS ? MyCupertinoApp() : MyMaterialApp(),
+      child: MyMaterialApp(),
     );
   }
 }

@@ -18,7 +18,7 @@ class CupertinoProductItem extends StatelessWidget {
             onTap: () {
               Navigator.of(context).push(
                 CupertinoPageRoute(
-                  builder: (ctx) => CupertinoProductDetailScreen(title),
+                  builder: (ctx) => CupertinoProductDetailScreen(id),
                 ),
               );
             },
