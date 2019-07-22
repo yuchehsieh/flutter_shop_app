@@ -15,8 +15,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     final bool isIOS = Platform.isIOS;
 
-    return ChangeNotifierProvider(
-      builder: (ctx) => Products(),
+    return ChangeNotifierProvider.value(
+      value: Products(),
       child: isIOS ? MyCupertinoApp() : MyMaterialApp(),
       // child: MyMaterialApp(),
     );
