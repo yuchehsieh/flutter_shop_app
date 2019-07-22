@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shop_app/providers/product.dart';
 
 import 'package:shop_app/providers/products.dart';
-import 'package:shop_app/android/widgets/product_item.dart';
+import 'package:shop_app/android/widgets/grid_item.dart';
 
 class MaterialProductsGrid extends StatelessWidget {
   @override
@@ -19,10 +20,9 @@ class MaterialProductsGrid extends StatelessWidget {
         mainAxisSpacing: 10,
       ),
       itemBuilder: (context, index) {
-        return MaterialProductItem(
-          id: products[index].id,
-          imageUrl: products[index].imageUrl,
-          title: products[index].title,
+        return ChangeNotifierProvider<Product>.value(
+          value: products[index],
+          child: MaterialProductItem(),
         );
       },
     );

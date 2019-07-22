@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 
-import 'package:shop_app/ios/widgets/product_item.dart';
+import 'package:shop_app/ios/widgets/grid_item.dart';
 import 'package:shop_app/providers/products.dart';
 
 class CupertinoProductGrid extends StatelessWidget {
@@ -20,10 +20,9 @@ class CupertinoProductGrid extends StatelessWidget {
         mainAxisSpacing: 10,
       ),
       itemBuilder: (context, index) {
-        return CupertinoProductItem(
-          id: products[index].id,
-          imageUrl: products[index].imageUrl,
-          title: products[index].title,
+        return ChangeNotifierProvider.value(
+          value: products[index],
+          child: CupertinoProductItem(),
         );
       },
     );

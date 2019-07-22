@@ -1,15 +1,13 @@
 import 'package:flutter/cupertino.dart';
+import 'package:provider/provider.dart';
 import 'package:shop_app/ios/screens/product_detail_screen.dart';
+import 'package:shop_app/providers/product.dart';
 
 class CupertinoProductItem extends StatelessWidget {
-  final String id;
-  final String title;
-  final String imageUrl;
-
-  CupertinoProductItem({this.id, this.title, this.imageUrl});
-
   @override
   Widget build(BuildContext context) {
+    final product = Provider.of<Product>(context);
+
     return ClipRRect(
       borderRadius: BorderRadius.circular(10),
       child: Stack(
@@ -18,13 +16,13 @@ class CupertinoProductItem extends StatelessWidget {
             onTap: () {
               Navigator.of(context).push(
                 CupertinoPageRoute(
-                  builder: (ctx) => CupertinoProductDetailScreen(id),
+                  builder: (ctx) => CupertinoProductDetailScreen(product.id),
                 ),
               );
             },
             child: Container(
                 width: double.infinity,
-                child: Image.network(imageUrl, fit: BoxFit.cover)),
+                child: Image.network(product.imageUrl, fit: BoxFit.cover)),
           ),
           Positioned(
             bottom: 0,
@@ -40,12 +38,16 @@ class CupertinoProductItem extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
                   CupertinoButton(
-                    child: Icon(CupertinoIcons.heart_solid),
-                    onPressed: () {},
+                    child: Icon(
+                      product.isFavorite
+                          ? CupertinoIcons.heart_solid
+                          : CupertinoIcons.heart,
+                    ),
+                    onPressed: () => product.toggleFavoriteStatus(),
                     padding: EdgeInsets.only(bottom: 3),
                   ),
                   Text(
-                    title,
+                    product.title,
                     style: TextStyle(
                       color: CupertinoColors.white,
                       fontSize: 12,
