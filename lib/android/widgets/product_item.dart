@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:shop_app/screens/prodcut_detail_screen.dart';
+import 'package:shop_app/android/screens/prodcut_detail_screen.dart';
 
-class ProductItem extends StatelessWidget {
+class MaterialProductItem extends StatelessWidget {
   final String id;
   final String title;
   final String imageUrl;
 
-  ProductItem({this.id, this.title, this.imageUrl});
+  MaterialProductItem({this.id, this.title, this.imageUrl});
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +16,7 @@ class ProductItem extends StatelessWidget {
         child: GestureDetector(
           onTap: () {
             Navigator.of(context).pushNamed(
-              ProdcutDetailScreen.routeName,
+              MaterialProdcutDetailScreen.routeName,
               arguments: id,
             );
           },

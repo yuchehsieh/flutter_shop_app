@@ -1,14 +1,15 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 
+import 'package:shop_app/ios/widgets/product_item.dart';
 import 'package:shop_app/providers/products.dart';
-import 'package:shop_app/widgets/product_item.dart';
 
-class ProductsGrid extends StatelessWidget {
+class CupertinoProductGrid extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final productData = Provider.of<Products>(context);
     final products = productData.items;
+
     return GridView.builder(
       padding: const EdgeInsets.all(10.0),
       itemCount: products.length,
@@ -19,7 +20,7 @@ class ProductsGrid extends StatelessWidget {
         mainAxisSpacing: 10,
       ),
       itemBuilder: (context, index) {
-        return ProductItem(
+        return CupertinoProductItem(
           id: products[index].id,
           imageUrl: products[index].imageUrl,
           title: products[index].title,
