@@ -6,7 +6,7 @@ import 'package:shop_app/providers/product.dart';
 class CupertinoProductItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final product = Provider.of<Product>(context);
+    final product = Provider.of<Product>(context, listen: false);
 
     return ClipRRect(
       borderRadius: BorderRadius.circular(10),
@@ -37,14 +37,17 @@ class CupertinoProductItem extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
-                  CupertinoButton(
-                    child: Icon(
-                      product.isFavorite
-                          ? CupertinoIcons.heart_solid
-                          : CupertinoIcons.heart,
+                  Consumer<Product>(
+                    builder: (context, product, child) => CupertinoButton(
+                      child: Icon(
+                        product.isFavorite
+                            ? CupertinoIcons.heart_solid
+                            : CupertinoIcons.heart,
+                      ),
+                      onPressed: () => product.toggleFavoriteStatus(),
+                      padding: EdgeInsets.only(bottom: 3),
                     ),
-                    onPressed: () => product.toggleFavoriteStatus(),
-                    padding: EdgeInsets.only(bottom: 3),
+                    child: Text('this part is never change'),
                   ),
                   Text(
                     product.title,

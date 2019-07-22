@@ -12,7 +12,7 @@ class MaterialProductItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final product = Provider.of<Product>(context);
+    final product = Provider.of<Product>(context, listen: false);
 
     return ClipRRect(
       borderRadius: BorderRadius.circular(10),
@@ -27,12 +27,14 @@ class MaterialProductItem extends StatelessWidget {
           child: Image.network(product.imageUrl, fit: BoxFit.cover),
         ),
         footer: GridTileBar(
-          leading: IconButton(
-            icon: Icon(
-              product.isFavorite ? Icons.favorite_border : Icons.favorite,
-              color: Theme.of(context).accentColor,
+          leading: Consumer<Product>(
+            builder: (context, product, child) => IconButton(
+              icon: Icon(
+                product.isFavorite ? Icons.favorite_border : Icons.favorite,
+                color: Theme.of(context).accentColor,
+              ),
+              onPressed: () => product.toggleFavoriteStatus(),
             ),
-            onPressed: () => product.toggleFavoriteStatus(),
           ),
           trailing: IconButton(
             icon: Icon(
