@@ -30,7 +30,7 @@ class MaterialProductItem extends StatelessWidget {
           leading: Consumer<Product>(
             builder: (context, product, child) => IconButton(
               icon: Icon(
-                product.isFavorite ? Icons.favorite_border : Icons.favorite,
+                product.isFavorite ? Icons.favorite : Icons.favorite_border,
                 color: Theme.of(context).accentColor,
               ),
               onPressed: () => product.toggleFavoriteStatus(),
