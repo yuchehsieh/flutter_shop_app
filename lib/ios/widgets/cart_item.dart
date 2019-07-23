@@ -19,7 +19,7 @@ class CupertinoCartItem extends StatelessWidget {
   });
 
   Future<bool> showAlertBeforeRemoveItem(BuildContext context) {
-    return showCupertinoModalPopup(
+    return showCupertinoDialog(
       context: context,
       builder: (context) {
         return CupertinoAlertDialog(
