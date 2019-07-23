@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:shop_app/android/materialApp.dart';
 import 'package:shop_app/ios/cupertinoApp.dart';
 import 'package:shop_app/providers/cart.dart';
+import 'package:shop_app/providers/orders.dart';
 import './providers/products.dart';
 
 void main() => runApp(MyApp());
@@ -24,9 +25,12 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider.value(
           value: Cart(),
         ),
+        ChangeNotifierProvider.value(
+          value: Orders(),
+        ),
       ],
-      child: isIOS ? MyCupertinoApp() : MyMaterialApp(),
-      // child: MyMaterialApp(),
+      // child: isIOS ? MyCupertinoApp() : MyMaterialApp(),
+      child: MyMaterialApp(),
     );
   }
 }
