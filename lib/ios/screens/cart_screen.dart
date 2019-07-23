@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shop_app/providers/cart.dart';
+import 'package:shop_app/ios/widgets/cart_item.dart';
+import 'package:shop_app/providers/cart.dart' show Cart;
 
 class CupertinoCartScreen extends StatelessWidget {
   @override
@@ -14,19 +16,8 @@ class CupertinoCartScreen extends StatelessWidget {
       child: SafeArea(
         child: Column(
           children: <Widget>[
-            Container(
+            Card(
               margin: const EdgeInsets.all(15),
-              decoration: BoxDecoration(
-                // border: Border.all(width: 1),
-                boxShadow: [
-                  BoxShadow(
-                    color: CupertinoColors.black,
-                    offset: Offset.infinite,
-                    spreadRadius: 10,
-                  ),
-                ],
-                color: CupertinoColors.lightBackgroundGray,
-              ),
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Row(
@@ -55,17 +46,28 @@ class CupertinoCartScreen extends StatelessWidget {
                         color: CupertinoColors.activeBlue,
                       ),
                     ),
-                    SizedBox(width: 10),
-                    GestureDetector(
+                    CupertinoButton(
                       child: Text(
-                        'Order Now',
+                        'ORDER NOW',
                         style: CupertinoTheme.of(context)
                             .textTheme
                             .actionTextStyle,
                       ),
-                      onTap: () {},
+                      onPressed: () {},
                     )
                   ],
+                ),
+              ),
+            ),
+            SizedBox(height: 10),
+            Expanded(
+              child: ListView.builder(
+                itemCount: cart.itemCount,
+                itemBuilder: (context, index) => CupertinoCartItem(
+                  id: cart.items.values.toList()[index].id,
+                  price: cart.items.values.toList()[index].price,
+                  quantity: cart.items.values.toList()[index].quantity,
+                  title: cart.items.values.toList()[index].title,
                 ),
               ),
             )

@@ -18,7 +18,7 @@ class MyMaterialApp extends StatelessWidget {
       routes: {
         MaterialProdcutDetailScreen.routeName: (ctx) =>
             MaterialProdcutDetailScreen(),
-        CartScreen.routeName: (ctx) => CartScreen(),
+        MaterialCartScreen.routeName: (ctx) => MaterialCartScreen(),
       },
     );
   }
