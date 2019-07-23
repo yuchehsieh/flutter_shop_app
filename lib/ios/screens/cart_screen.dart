@@ -63,11 +63,11 @@ class CupertinoCartScreen extends StatelessWidget {
         cart.items.values.toList(),
         cart.totalAmount,
       );
+      Timer(Duration(seconds: 1), () {
+        cart.clear();
+        showSuccess(context);
+      });
     }
-    Timer(Duration(seconds: 1), () {
-      cart.clear();
-      showSuccess(context);
-    });
   }
 
   @override
@@ -136,6 +136,24 @@ class CupertinoCartScreen extends StatelessWidget {
                   quantity: cart.items.values.toList()[index].quantity,
                   title: cart.items.values.toList()[index].title,
                   productId: cart.items.keys.toList()[index],
+                ),
+              ),
+            ),
+            Container(
+              height: 50,
+              width: double.infinity,
+              color: CupertinoColors.activeBlue,
+              child: Center(
+                child: CupertinoButton(
+                  child: Text(
+                    'ORDER NOW',
+                    style: TextStyle(
+                      color: CupertinoColors.white,
+                    ),
+                  ),
+                  onPressed: () {
+                    onConfirmOrder(cart, context);
+                  },
                 ),
               ),
             )
