@@ -1,10 +1,75 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shop_app/ios/widgets/cart_item.dart';
 import 'package:shop_app/providers/cart.dart' show Cart;
+import 'package:shop_app/providers/orders.dart';
 
 class CupertinoCartScreen extends StatelessWidget {
+  Future<bool> showConfirmBeforeMakeOrder(BuildContext context) {
+    return showCupertinoDialog(
+      context: context,
+      builder: (context) {
+        return CupertinoAlertDialog(
+          title: Text('Add all cart items to order ?'),
+          // content: Text('It won\'t recover, make sure to do this'),
+          actions: <Widget>[
+            CupertinoDialogAction(
+              isDefaultAction: true,
+              onPressed: () {
+                Navigator.of(context).pop(true);
+              },
+              child: Text('Yes'),
+            ),
+            CupertinoDialogAction(
+              onPressed: () {
+                Navigator.of(context).pop(false);
+              },
+              child: Text('Let me think'),
+            )
+          ],
+        );
+      },
+    );
+  }
+
+  void showSuccess(BuildContext context) {
+    showCupertinoDialog(
+      context: context,
+      builder: (context) {
+        return CupertinoAlertDialog(
+          title: Text('Success'),
+          // content: Text('It won\'t recover, make sure to do this'),
+          actions: <Widget>[
+            CupertinoDialogAction(
+              isDefaultAction: true,
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Ok'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void onConfirmOrder(Cart cart, BuildContext context) async {
+    final bool isConfirmOrder = await showConfirmBeforeMakeOrder(context);
+    if (isConfirmOrder) {
+      Provider.of<Orders>(context).addOrder(
+        cart.items.values.toList(),
+        cart.totalAmount,
+      );
+    }
+    Timer(Duration(seconds: 1), () {
+      cart.clear();
+      showSuccess(context);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final cart = Provider.of<Cart>(context);
@@ -53,7 +118,9 @@ class CupertinoCartScreen extends StatelessWidget {
                             .textTheme
                             .actionTextStyle,
                       ),
-                      onPressed: () {},
+                      onPressed: () {
+                        onConfirmOrder(cart, context);
+                      },
                     )
                   ],
                 ),
