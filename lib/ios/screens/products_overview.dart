@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shop_app/android/screens/products_overview_screen.dart';
 import 'package:shop_app/android/widgets/badge.dart';
+import 'package:shop_app/ios/screens/cart_screen.dart';
 import 'package:shop_app/ios/widgets/products_grid.dart';
 import 'package:shop_app/providers/cart.dart';
 
@@ -81,7 +82,11 @@ class _CupertinoProductsOverviewScreenState
               ),
               child: CupertinoButton(
                 child: Icon(Icons.shopping_cart),
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.of(context).push(
+                    CupertinoPageRoute(builder: (_) => CupertinoCartScreen()),
+                  );
+                },
               ),
             ),
             CupertinoButton(

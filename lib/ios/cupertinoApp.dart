@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 
-import 'package:shop_app/ios/screens/cart_screen.dart';
+import 'package:shop_app/ios/screens/order_screen.dart';
 import 'package:shop_app/ios/screens/product_detail_screen.dart';
 import 'package:shop_app/ios/screens/products_overview.dart';
 
@@ -16,7 +16,7 @@ class MyCupertinoApp extends StatelessWidget {
               title: Text('Shop'),
             ),
             BottomNavigationBarItem(
-              icon: Icon(CupertinoIcons.shopping_cart),
+              icon: Icon(CupertinoIcons.padlock_solid),
               title: Text('Cart'),
             )
           ],
@@ -29,7 +29,7 @@ class MyCupertinoApp extends StatelessWidget {
               });
             case 1:
               return CupertinoTabView(builder: (context) {
-                return CupertinoCartScreen();
+                return CupertinoOrderScreen();
               });
           }
         },
