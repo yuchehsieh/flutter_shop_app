@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 
 import 'package:shop_app/android/materialApp.dart';
 import 'package:shop_app/ios/cupertinoApp.dart';
+import 'package:shop_app/providers/cart.dart';
 import './providers/products.dart';
 
 void main() => runApp(MyApp());
@@ -15,10 +16,18 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     final bool isIOS = Platform.isIOS;
 
-    return ChangeNotifierProvider.value(
-      value: Products(),
-      // child: isIOS ? MyCupertinoApp() : MyMaterialApp(),
-      child: MyMaterialApp(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider.value(
+          value: Products(),
+        ),
+        ChangeNotifierProvider.value(
+          value: Cart(),
+        ),
+      ],
+      child:
+          // child: isIOS ? MyCupertinoApp() : MyMaterialApp(),
+          MyMaterialApp(),
     );
   }
 }
