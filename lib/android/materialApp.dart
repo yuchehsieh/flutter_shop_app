@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shop_app/android/screens/cart_screen.dart';
+import 'package:shop_app/android/screens/orders_screen.dart';
 
 import 'package:shop_app/android/screens/prodcut_detail_screen.dart';
 import 'package:shop_app/android/screens/products_overview_screen.dart';
@@ -19,6 +20,7 @@ class MyMaterialApp extends StatelessWidget {
         MaterialProdcutDetailScreen.routeName: (ctx) =>
             MaterialProdcutDetailScreen(),
         MaterialCartScreen.routeName: (ctx) => MaterialCartScreen(),
+        MaterialOrdersScreen.routeName: (ctx) => MaterialOrdersScreen(),
       },
     );
   }
