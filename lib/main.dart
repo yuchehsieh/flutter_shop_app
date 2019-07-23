@@ -25,9 +25,8 @@ class MyApp extends StatelessWidget {
           value: Cart(),
         ),
       ],
-      child:
-          // child: isIOS ? MyCupertinoApp() : MyMaterialApp(),
-          MyMaterialApp(),
+      child: isIOS ? MyCupertinoApp() : MyMaterialApp(),
+      // child:  MyMaterialApp(),
     );
   }
 }

@@ -1,7 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:shop_app/android/screens/products_overview_screen.dart';
+import 'package:shop_app/android/widgets/badge.dart';
 import 'package:shop_app/ios/widgets/products_grid.dart';
+import 'package:shop_app/providers/cart.dart';
 
 enum FiltersOptions { Favorites, All, Cancel }
 
@@ -66,11 +69,28 @@ class _CupertinoProductsOverviewScreenState
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
       navigationBar: CupertinoNavigationBar(
-          middle: const Text('MyShop'),
-          trailing: CupertinoButton(
-            child: Icon(Icons.more_vert),
-            onPressed: () => _setFilterOptions(context),
-          )),
+        middle: const Text('MyShop'),
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            Consumer<Cart>(
+              builder: (_, cartData, child) => Badge(
+                color: CupertinoColors.activeBlue,
+                value: cartData.itemCount.toString(),
+                child: child,
+              ),
+              child: CupertinoButton(
+                child: Icon(Icons.shopping_cart),
+                onPressed: () {},
+              ),
+            ),
+            CupertinoButton(
+              child: Icon(Icons.more_vert),
+              onPressed: () => _setFilterOptions(context),
+            ),
+          ],
+        ),
+      ),
       child: SafeArea(
         child: CupertinoProductGrid(_showOnlyFavorite),
       ),
