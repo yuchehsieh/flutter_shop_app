@@ -21,8 +21,32 @@ class CupertinoProductDetailScreen extends StatelessWidget {
         middle: Text(loadedProduct.title),
       ),
       child: SafeArea(
-        child: Center(
-          child: Text('Detail'),
+        child: SingleChildScrollView(
+          child: Column(
+            children: <Widget>[
+              Container(
+                height: 300,
+                width: double.infinity,
+                child: Image.network(loadedProduct.imageUrl, fit: BoxFit.cover),
+              ),
+              const SizedBox(height: 10),
+              Text(
+                '\$${loadedProduct.price}',
+                style: const TextStyle(
+                    color: CupertinoColors.inactiveGray, fontSize: 20),
+              ),
+              const SizedBox(height: 10),
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                child: Text(
+                  '${loadedProduct.description}',
+                  textAlign: TextAlign.center,
+                  softWrap: true,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
