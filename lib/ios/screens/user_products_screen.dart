@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shop_app/ios/screens/add_edit_product_screen.dart';
 import 'package:shop_app/ios/widgets/user_product_item.dart';
 import 'package:shop_app/providers/products.dart';
 
@@ -15,8 +16,18 @@ class CupertinoUserProductsScreen extends StatelessWidget {
       navigationBar: CupertinoNavigationBar(
         middle: const Text('Your Product'),
         trailing: CupertinoButton(
-          child: Icon(CupertinoIcons.add),
-          onPressed: () {},
+          child: Icon(
+            CupertinoIcons.add,
+            size: 30,
+          ),
+          padding: const EdgeInsets.only(bottom: 5.0),
+          onPressed: () {
+            Navigator.of(context).push(
+              CupertinoPageRoute(
+                builder: (_) => CupertinoAddEditProduct(),
+              ),
+            );
+          },
         ),
       ),
       child: SafeArea(
