@@ -35,12 +35,14 @@ class _CupertinoAddEditProductState extends State<CupertinoAddEditProduct> {
       ),
       child: SafeArea(
         child: GestureDetector(
-          behavior: HitTestBehavior.translucent,
-          onTap: () => SystemChannels.textInput.invokeMethod('TextInput.hide'),
+          behavior: HitTestBehavior.opaque,
+          onTap: () =>
+              // SystemChannels.textInput.invokeMethod('TextInput.hide'),
+              FocusScope.of(context).unfocus(),
           onPanDown: (_) => FocusScope.of(context).requestFocus(FocusNode()),
           child: Form(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.end,
+            child: ListView(
+              padding: EdgeInsets.only(bottom: 30),
               children: <Widget>[
                 CupertinoTextField(
                   padding: EdgeInsets.only(
