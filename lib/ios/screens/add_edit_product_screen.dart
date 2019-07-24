@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/services.dart';
 
 class CupertinoAddEditProduct extends StatefulWidget {
   @override
@@ -8,6 +9,15 @@ class CupertinoAddEditProduct extends StatefulWidget {
 
 class _CupertinoAddEditProductState extends State<CupertinoAddEditProduct> {
   final _priceFoucusNode = FocusNode();
+  final _descriptionFocusNode = FocusNode();
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    _priceFoucusNode.dispose();
+    _descriptionFocusNode.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,9 +33,10 @@ class _CupertinoAddEditProductState extends State<CupertinoAddEditProduct> {
           onPressed: () {},
         ),
       ),
-      child: GestureDetector(
-        onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
-        child: SafeArea(
+      child: SafeArea(
+        child: GestureDetector(
+          onTap: () => SystemChannels.textInput.invokeMethod('TextInput.hide'),
+          onPanDown: (_) => FocusScope.of(context).requestFocus(FocusNode()),
           child: Form(
             child: ListView(
               children: <Widget>[
@@ -52,10 +63,26 @@ class _CupertinoAddEditProductState extends State<CupertinoAddEditProduct> {
                   ),
                   // decoration: BoxDecoration(),
                   keyboardType: TextInputType.numberWithOptions(decimal: true),
-                  placeholder: 'Enter title',
+                  placeholder: 'Enter Price',
                   textInputAction: TextInputAction.done,
                   focusNode: _priceFoucusNode,
-                )
+                  onSubmitted: (_) {
+                    FocusScope.of(context).requestFocus(_descriptionFocusNode);
+                  },
+                ),
+                CupertinoTextField(
+                  padding: EdgeInsets.only(
+                    top: 20.0,
+                    left: 20.0,
+                    right: 20.0,
+                    bottom: 10.0,
+                  ),
+                  // decoration: BoxDecoration(),
+                  placeholder: 'description...',
+                  keyboardType: TextInputType.multiline,
+                  maxLines: 3,
+                  focusNode: _descriptionFocusNode,
+                ),
               ],
             ),
           ),
