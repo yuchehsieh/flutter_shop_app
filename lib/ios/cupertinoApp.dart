@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:shop_app/ios/screens/order_screen.dart';
 import 'package:shop_app/ios/screens/product_detail_screen.dart';
 import 'package:shop_app/ios/screens/products_overview.dart';
+import 'package:shop_app/ios/screens/user_products_screen.dart';
 
 class MyCupertinoApp extends StatelessWidget {
   @override
@@ -18,6 +19,10 @@ class MyCupertinoApp extends StatelessWidget {
             BottomNavigationBarItem(
               icon: Icon(CupertinoIcons.padlock_solid),
               title: Text('Cart'),
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(CupertinoIcons.pen),
+              title: Text('Manage'),
             )
           ],
         ),
@@ -30,6 +35,10 @@ class MyCupertinoApp extends StatelessWidget {
             case 1:
               return CupertinoTabView(builder: (context) {
                 return CupertinoOrderScreen();
+              });
+            case 2:
+              return CupertinoTabView(builder: (context) {
+                return CupertinoUserProductsScreen();
               });
           }
         },

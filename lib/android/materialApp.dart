@@ -4,6 +4,7 @@ import 'package:shop_app/android/screens/orders_screen.dart';
 
 import 'package:shop_app/android/screens/prodcut_detail_screen.dart';
 import 'package:shop_app/android/screens/products_overview_screen.dart';
+import 'package:shop_app/android/screens/user_products_screen.dart';
 
 class MyMaterialApp extends StatelessWidget {
   @override
@@ -21,6 +22,8 @@ class MyMaterialApp extends StatelessWidget {
             MaterialProdcutDetailScreen(),
         MaterialCartScreen.routeName: (ctx) => MaterialCartScreen(),
         MaterialOrdersScreen.routeName: (ctx) => MaterialOrdersScreen(),
+        MaterialUserProductsScreen.routeName: (ctx) =>
+            MaterialUserProductsScreen(),
       },
     );
   }

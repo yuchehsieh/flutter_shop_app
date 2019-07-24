@@ -13,12 +13,13 @@ class CupertinoOrderScreen extends StatelessWidget {
         middle: const Text('My Order'),
       ),
       child: SafeArea(
-          child: ListView.builder(
-        itemCount: orderData.orders.length,
-        itemBuilder: (context, index) => CupertinoOrderItem(
-          orderData.orders[index],
+        child: ListView.builder(
+          itemCount: orderData.orders.length,
+          itemBuilder: (context, index) => CupertinoOrderItem(
+            orderData.orders[index],
+          ),
         ),
-      )),
+      ),
     );
   }
 }
