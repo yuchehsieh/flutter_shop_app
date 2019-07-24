@@ -29,8 +29,8 @@ class MyApp extends StatelessWidget {
           value: Orders(),
         ),
       ],
-      child: isIOS ? MyCupertinoApp() : MyMaterialApp(),
-      // child: MyMaterialApp(),
+      // child: isIOS ? MyCupertinoApp() : MyMaterialApp(),
+      child: MyMaterialApp(),
     );
   }
 }
