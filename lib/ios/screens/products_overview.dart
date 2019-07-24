@@ -97,7 +97,7 @@ class _CupertinoProductsOverviewScreenState
         ),
       ),
       child: SafeArea(
-        child: CupertinoProductGrid(_showOnlyFavorite),
+        child: Scaffold(body: CupertinoProductGrid(_showOnlyFavorite)),
       ),
     );
   }

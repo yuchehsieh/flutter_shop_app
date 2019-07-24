@@ -15,6 +15,20 @@ class MaterialProductItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final product = Provider.of<Product>(context, listen: false);
     final cart = Provider.of<Cart>(context, listen: false);
+
+    final snackBar = SnackBar(
+      content: Text('Yay! A SnackBar!'),
+      action: SnackBarAction(
+        label: 'Undo',
+        onPressed: () {
+          // Some code to undo the change.
+          cart.removeSingleItem(product.id);
+        },
+      ),
+      behavior: SnackBarBehavior.floating,
+      // duration: Duration(seconds: 2),
+    );
+
     return ClipRRect(
       borderRadius: BorderRadius.circular(10),
       child: GridTile(
@@ -48,6 +62,8 @@ class MaterialProductItem extends StatelessWidget {
                 product.price,
                 product.title,
               );
+              Scaffold.of(context).hideCurrentSnackBar();
+              Scaffold.of(context).showSnackBar(snackBar);
             },
           ),
           title: Text(

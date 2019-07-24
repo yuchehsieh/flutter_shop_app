@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shop_app/ios/screens/product_detail_screen.dart';
 import 'package:shop_app/providers/cart.dart';
@@ -9,6 +10,21 @@ class CupertinoProductItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final product = Provider.of<Product>(context, listen: false);
     final cart = Provider.of<Cart>(context, listen: false);
+
+    final snackBar = SnackBar(
+      content: Text('Yay! A SnackBar!'),
+      action: SnackBarAction(
+        label: 'Undo',
+        onPressed: () {
+          // Some code to undo the change.
+          cart.removeSingleItem(product.id);
+        },
+        textColor: CupertinoColors.destructiveRed,
+      ),
+      behavior: SnackBarBehavior.floating,
+      // duration: Duration(seconds: 2),
+    );
+
     return ClipRRect(
       borderRadius: BorderRadius.circular(10),
       child: Stack(
@@ -66,6 +82,9 @@ class CupertinoProductItem extends StatelessWidget {
                         product.price,
                         product.title,
                       );
+
+                      Scaffold.of(context).hideCurrentSnackBar();
+                      Scaffold.of(context).showSnackBar(snackBar);
                     },
                     padding: EdgeInsets.only(bottom: 3),
                   ),
