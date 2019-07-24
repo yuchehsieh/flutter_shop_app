@@ -8,6 +8,8 @@ class MaterialAddEditProduct extends StatefulWidget {
 }
 
 class _MaterialAddEditProductState extends State<MaterialAddEditProduct> {
+  final _priceFoucusNode = FocusNode();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -21,7 +23,16 @@ class _MaterialAddEditProductState extends State<MaterialAddEditProduct> {
             children: <Widget>[
               TextFormField(
                 decoration: InputDecoration(labelText: 'Title'),
-                textInputAction: TextInputAction.done,
+                textInputAction: TextInputAction.next,
+                onFieldSubmitted: (_) {
+                  FocusScope.of(context).requestFocus(_priceFoucusNode);
+                },
+              ),
+              TextFormField(
+                decoration: InputDecoration(labelText: 'Price'),
+                textInputAction: TextInputAction.next,
+                keyboardType: TextInputType.numberWithOptions(decimal: true),
+                focusNode: _priceFoucusNode,
               ),
             ],
           ),

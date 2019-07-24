@@ -7,6 +7,8 @@ class CupertinoAddEditProduct extends StatefulWidget {
 }
 
 class _CupertinoAddEditProductState extends State<CupertinoAddEditProduct> {
+  final _priceFoucusNode = FocusNode();
+
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
@@ -36,7 +38,23 @@ class _CupertinoAddEditProductState extends State<CupertinoAddEditProduct> {
                   ),
                   // decoration: BoxDecoration(),
                   placeholder: 'Enter title',
+                  textInputAction: TextInputAction.next,
+                  onSubmitted: (_) {
+                    FocusScope.of(context).requestFocus(_priceFoucusNode);
+                  },
+                ),
+                CupertinoTextField(
+                  padding: EdgeInsets.only(
+                    top: 20.0,
+                    left: 20.0,
+                    right: 20.0,
+                    bottom: 10.0,
+                  ),
+                  // decoration: BoxDecoration(),
+                  keyboardType: TextInputType.numberWithOptions(decimal: true),
+                  placeholder: 'Enter title',
                   textInputAction: TextInputAction.done,
+                  focusNode: _priceFoucusNode,
                 )
               ],
             ),
