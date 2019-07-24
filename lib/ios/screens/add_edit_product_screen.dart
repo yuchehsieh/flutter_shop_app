@@ -35,10 +35,12 @@ class _CupertinoAddEditProductState extends State<CupertinoAddEditProduct> {
       ),
       child: SafeArea(
         child: GestureDetector(
+          behavior: HitTestBehavior.translucent,
           onTap: () => SystemChannels.textInput.invokeMethod('TextInput.hide'),
           onPanDown: (_) => FocusScope.of(context).requestFocus(FocusNode()),
           child: Form(
-            child: ListView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>[
                 CupertinoTextField(
                   padding: EdgeInsets.only(
