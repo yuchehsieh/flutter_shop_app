@@ -42,11 +42,23 @@ class _MaterialAddEditProductState extends State<MaterialAddEditProduct> {
 
   void _updateImageUrl() {
     if (!_imageUrlFocusNode.hasFocus) {
+      if ((!_imageUrlController.text.startsWith('http') &&
+              !_imageUrlController.text.startsWith('https')) ||
+          (!_imageUrlController.text.endsWith('.png') &&
+              !_imageUrlController.text.endsWith('.jpg') &&
+              !_imageUrlController.text.endsWith('.jpeg'))) {
+        return;
+      }
+
       setState(() {});
     }
   }
 
   void _saveForm() {
+    final isValid = _form.currentState.validate();
+    if (!isValid) {
+      return;
+    }
     _form.currentState.save();
     print(_editedProduct.title);
     print(_editedProduct.id);
@@ -77,7 +89,10 @@ class _MaterialAddEditProductState extends State<MaterialAddEditProduct> {
             child: ListView(
               children: <Widget>[
                 TextFormField(
-                  decoration: InputDecoration(labelText: 'Title'),
+                  decoration: InputDecoration(
+                    labelText: 'Title',
+                    // errorStyle: null,
+                  ),
                   textInputAction: TextInputAction.next,
                   onFieldSubmitted: (_) {
                     FocusScope.of(context).requestFocus(_priceFoucusNode);
@@ -91,6 +106,12 @@ class _MaterialAddEditProductState extends State<MaterialAddEditProduct> {
                       price: _editedProduct.price,
                     );
                   },
+                  validator: (String value) {
+                    if (value.isEmpty) {
+                      return 'Please Enter a title';
+                    }
+                    return null;
+                  },
                 ),
                 TextFormField(
                   decoration: InputDecoration(labelText: 'Price'),
@@ -99,6 +120,18 @@ class _MaterialAddEditProductState extends State<MaterialAddEditProduct> {
                   focusNode: _priceFoucusNode,
                   onFieldSubmitted: (_) {
                     FocusScope.of(context).requestFocus(_descriptionFocusNode);
+                  },
+                  validator: (value) {
+                    if (value.isEmpty) {
+                      return 'Please enter a price';
+                    }
+                    if (double.tryParse(value) == null) {
+                      return 'Please enter a valid number';
+                    }
+                    if (double.parse(value) <= 0) {
+                      return 'Please a number greater than zero';
+                    }
+                    return null;
                   },
                   onSaved: (String value) {
                     _editedProduct = Product(
@@ -122,6 +155,15 @@ class _MaterialAddEditProductState extends State<MaterialAddEditProduct> {
                       imageUrl: _editedProduct.imageUrl,
                       price: _editedProduct.price,
                     );
+                  },
+                  validator: (String value) {
+                    if (value.isEmpty) {
+                      return 'Please Enter a description';
+                    }
+                    if (value.length < 10) {
+                      return 'Should be at least 10 characters long';
+                    }
+                    return null;
                   },
                 ),
                 Row(
@@ -157,6 +199,21 @@ class _MaterialAddEditProductState extends State<MaterialAddEditProduct> {
                             imageUrl: value,
                             price: _editedProduct.price,
                           );
+                        },
+                        validator: (String value) {
+                          if (value.isEmpty) {
+                            return 'Please Enter an image URL';
+                          }
+                          if (!value.startsWith('http') ||
+                              !value.startsWith('https')) {
+                            return 'Pleas a valid image URL';
+                          }
+                          if (!value.endsWith('.png') ||
+                              !value.endsWith('.jpg') ||
+                              !value.endsWith('.jpeg')) {
+                            return 'Pleas a valid image URL';
+                          }
+                          return null;
                         },
                       ),
                     )
