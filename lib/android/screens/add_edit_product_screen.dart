@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 import 'package:shop_app/providers/product.dart';
+import 'package:shop_app/providers/products.dart';
 
 class MaterialAddEditProduct extends StatefulWidget {
   static const routeName = '/add-edit-product';
@@ -60,11 +62,8 @@ class _MaterialAddEditProductState extends State<MaterialAddEditProduct> {
       return;
     }
     _form.currentState.save();
-    print(_editedProduct.title);
-    print(_editedProduct.id);
-    print(_editedProduct.price);
-    print(_editedProduct.description);
-    print(_editedProduct.imageUrl);
+    Provider.of<Products>(context, listen: false).addProduct(_editedProduct);
+    Navigator.of(context).pop();
   }
 
   @override
@@ -206,12 +205,12 @@ class _MaterialAddEditProductState extends State<MaterialAddEditProduct> {
                           }
                           if (!value.startsWith('http') ||
                               !value.startsWith('https')) {
-                            return 'Pleas a valid image URL';
+                            return 'Pleas a valid image URL start';
                           }
-                          if (!value.endsWith('.png') ||
-                              !value.endsWith('.jpg') ||
+                          if (!value.endsWith('.png') &&
+                              !value.endsWith('.jpg') &&
                               !value.endsWith('.jpeg')) {
-                            return 'Pleas a valid image URL';
+                            return 'Pleas a valid image URL end';
                           }
                           return null;
                         },

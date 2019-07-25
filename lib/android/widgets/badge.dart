@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class Badge extends StatelessWidget {
@@ -37,6 +40,9 @@ class Badge extends StatelessWidget {
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 10,
+                color: Platform.isIOS
+                    ? CupertinoColors.white
+                    : Theme.of(context).accentColor,
               ),
             ),
           ),

@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 import 'package:shop_app/providers/product.dart';
+import 'package:shop_app/providers/products.dart';
 
 class CupertinoAddEditProduct extends StatefulWidget {
   @override
@@ -51,11 +53,52 @@ class _CupertinoAddEditProductState extends State<CupertinoAddEditProduct> {
 
   void _updateImageUrl() {
     if (!_imageUrlFocusNode.hasFocus) {
+      if ((!_imageUrlController.text.startsWith('http') &&
+              !_imageUrlController.text.startsWith('https')) ||
+          (!_imageUrlController.text.endsWith('.png') &&
+              !_imageUrlController.text.endsWith('.jpg') &&
+              !_imageUrlController.text.endsWith('.jpeg'))) {
+        return;
+      }
+
       setState(() {});
     }
   }
 
   void _saveForm() {
+    /* all String */
+    final title = _titleController.text;
+    final price = _priceController.text;
+    final imageUrl = _imageUrlController.text;
+    final description = _descriptionController.text;
+
+    /* validate */
+    final titleValidation = _titleValidator(title);
+    final priceValidation = _priceValidator(price);
+    final imageUrlValidation = _imageUrlValidator(imageUrl);
+    final descriptionValidation = _descriptionValidator(description);
+
+    List<String> errorMessage = [];
+
+    if (titleValidation != null) {
+      errorMessage.add(titleValidation);
+    }
+    if (priceValidation != null) {
+      errorMessage.add(priceValidation);
+    }
+    if (imageUrlValidation != null) {
+      errorMessage.add(imageUrlValidation);
+    }
+    if (descriptionValidation != null) {
+      errorMessage.add(imageUrlValidation);
+    }
+
+    if (errorMessage.length != 0) {
+      _showErrorMessage(errorMessage);
+      return;
+    }
+
+    /* save */
     _form.currentState.save();
     _editedProduct = Product(
       description: _descriptionController.text,
@@ -64,10 +107,78 @@ class _CupertinoAddEditProductState extends State<CupertinoAddEditProduct> {
       imageUrl: _imageUrlController.text,
       price: double.parse(_priceController.text),
     );
-    print(_titleController.text);
-    print(_priceController.text);
-    print(_descriptionController.text);
-    print(_imageUrlController.text);
+
+    Provider.of<Products>(context).addProduct(_editedProduct);
+    Navigator.of(context).pop();
+  }
+
+  void _showErrorMessage(List<String> errorMessage) {
+    showCupertinoDialog(
+      context: context,
+      builder: (context) {
+        return CupertinoAlertDialog(
+          title: Text('Some input error!'),
+          content: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: errorMessage.map((message) => Text(message)).toList(),
+          ),
+          actions: <Widget>[
+            CupertinoDialogAction(
+              isDefaultAction: true,
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Ok'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  dynamic _titleValidator(String value) {
+    if (value.isEmpty) {
+      return 'Please Enter a title';
+    }
+    return null;
+  }
+
+  dynamic _priceValidator(String value) {
+    if (value.isEmpty) {
+      return 'Please enter a price';
+    }
+    if (double.tryParse(value) == null) {
+      return 'Please enter a valid number';
+    }
+    if (double.parse(value) <= 0) {
+      return 'Please a number greater than zero';
+    }
+    return null;
+  }
+
+  dynamic _imageUrlValidator(String value) {
+    if (value.isEmpty) {
+      return 'Please Enter an image URL';
+    }
+    if (!value.startsWith('http') || !value.startsWith('https')) {
+      return 'Pleas a valid image URL start';
+    }
+    if (!value.endsWith('.png') &&
+        !value.endsWith('.jpg') &&
+        !value.endsWith('.jpeg')) {
+      return 'Pleas a valid image URL end';
+    }
+    return null;
+  }
+
+  dynamic _descriptionValidator(String value) {
+    if (value.isEmpty) {
+      return 'Please Enter a description';
+    }
+    if (value.length < 10) {
+      return 'Should be at least 10 characters long';
+    }
+    return null;
   }
 
   @override
@@ -128,7 +239,7 @@ class _CupertinoAddEditProductState extends State<CupertinoAddEditProduct> {
                   textCapitalization: TextCapitalization.words,
                   autocorrect: false,
                   decoration: fieldDecoration,
-                  placeholder: 'Name',
+                  placeholder: 'Title',
                   controller: _titleController,
                   onSubmitted: (_) {
                     FocusScope.of(context).requestFocus(_priceFoucusNode);
@@ -151,7 +262,7 @@ class _CupertinoAddEditProductState extends State<CupertinoAddEditProduct> {
                   clearButtonMode: _priceFoucusNode.hasFocus
                       ? OverlayVisibilityMode.editing
                       : OverlayVisibilityMode.never,
-                  placeholder: 'Enter Price',
+                  placeholder: 'Price',
                   textInputAction: TextInputAction.done,
                   focusNode: _priceFoucusNode,
                   onSubmitted: (_) {
@@ -175,7 +286,7 @@ class _CupertinoAddEditProductState extends State<CupertinoAddEditProduct> {
                   clearButtonMode: _descriptionFocusNode.hasFocus
                       ? OverlayVisibilityMode.editing
                       : OverlayVisibilityMode.never,
-                  placeholder: 'description...',
+                  placeholder: 'Description',
                   keyboardType: TextInputType.multiline,
                   maxLines: 3,
                   focusNode: _descriptionFocusNode,
@@ -211,7 +322,7 @@ class _CupertinoAddEditProductState extends State<CupertinoAddEditProduct> {
                       Expanded(
                         child: CupertinoTextField(
                           decoration: fieldDecoration,
-                          placeholder: 'Enter image url ...',
+                          placeholder: 'Image url',
                           keyboardType: TextInputType.url,
                           textInputAction: TextInputAction.done,
                           clearButtonMode: _imageUrlFocusNode.hasFocus
