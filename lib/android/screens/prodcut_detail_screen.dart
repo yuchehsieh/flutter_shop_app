@@ -2,6 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shop_app/providers/products.dart';
 
+enum FilterOptions {
+  Favorites,
+  All,
+}
+
 class MaterialProdcutDetailScreen extends StatelessWidget {
   static const routeName = '/product-detail';
 
@@ -18,6 +23,8 @@ class MaterialProdcutDetailScreen extends StatelessWidget {
       ),
       body: SingleChildScrollView(
         child: Column(
+          // mainAxisAlignment: MainAxisAlignment.end,
+          crossAxisAlignment: CrossAxisAlignment.end,
           children: <Widget>[
             Container(
               height: 300,
@@ -38,6 +45,33 @@ class MaterialProdcutDetailScreen extends StatelessWidget {
                 textAlign: TextAlign.center,
                 softWrap: true,
               ),
+            ),
+            PopupMenuButton(
+              // onCanceled: ,
+              offset: Offset(-30, 50),
+              // enabled: false,
+              // elevation: 5,
+              // initialValue: FilterOptions.Favorites,
+              onSelected: (FilterOptions selectedValue) {
+                // setState(() {
+                //   if (selectedValue == FilterOptions.Favorites) {
+                //     _showOnlyFavorites = true;
+                //   } else {
+                //     _showOnlyFavorites = false;
+                //   }
+                // });
+              },
+              itemBuilder: (_) => [
+                PopupMenuItem(
+                  child: Text('Only Favorites'),
+                  value: FilterOptions.Favorites,
+                ),
+                PopupMenuItem(
+                  child: Text('Show All'),
+                  value: FilterOptions.All,
+                ),
+              ],
+              icon: Icon(Icons.more_vert),
             ),
           ],
         ),
