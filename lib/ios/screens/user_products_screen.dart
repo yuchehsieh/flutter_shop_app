@@ -24,7 +24,7 @@ class CupertinoUserProductsScreen extends StatelessWidget {
           onPressed: () {
             Navigator.of(context).push(
               CupertinoPageRoute(
-                builder: (_) => CupertinoAddEditProduct(),
+                builder: (_) => CupertinoAddEditProduct(null),
               ),
             );
           },
@@ -39,6 +39,7 @@ class CupertinoUserProductsScreen extends StatelessWidget {
               itemBuilder: (_, index) => Column(
                 children: <Widget>[
                   CupertinoUserProductItem(
+                    productData.items[index].id,
                     productData.items[index].title,
                     productData.items[index].imageUrl,
                   ),

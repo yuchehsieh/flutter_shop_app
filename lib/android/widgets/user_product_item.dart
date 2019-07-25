@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:shop_app/android/screens/add_edit_product_screen.dart';
 
 class MaterialUserProductItem extends StatelessWidget {
+  final String id;
   final String title;
   final String imageUrl;
 
   MaterialUserProductItem(
+    this.id,
     this.title,
     this.imageUrl,
   );
@@ -21,7 +24,12 @@ class MaterialUserProductItem extends StatelessWidget {
         children: <Widget>[
           IconButton(
             icon: Icon(Icons.edit),
-            onPressed: () {},
+            onPressed: () {
+              Navigator.of(context).pushNamed(
+                MaterialAddEditProduct.routeName,
+                arguments: id,
+              );
+            },
             color: Theme.of(context).primaryColor,
           ),
           IconButton(

@@ -18,18 +18,50 @@ class _MaterialAddEditProductState extends State<MaterialAddEditProduct> {
   final _imageUrlController = TextEditingController();
   final _form = GlobalKey<FormState>();
 
+  bool _isInit = true;
+
   Product _editedProduct = Product(
-    id: '',
+    id: null,
     price: null,
     title: '',
     imageUrl: '',
     description: '',
   );
 
+  Map<String, String> _initValues = {
+    'price': '',
+    'title': '',
+    'imageUrl': '',
+    'description': '',
+  };
+
   @override
   void initState() {
     _imageUrlFocusNode.addListener(_updateImageUrl);
     super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    if (_isInit) {
+      final String productId = ModalRoute.of(context).settings.arguments;
+      if (productId != null) {
+        _editedProduct =
+            Provider.of<Products>(context, listen: false).findById(productId);
+        _initValues = {
+          'price': _editedProduct.price.toString(),
+          'title': _editedProduct.title,
+          'description': _editedProduct.description,
+          'imageUrl': '',
+          // 'imageUrl': _editedProduct.imageUrl,
+        };
+        _imageUrlController.text = _editedProduct.imageUrl;
+      }
+    }
+
+    _isInit = false;
+
+    super.didChangeDependencies();
   }
 
   @override
@@ -62,7 +94,13 @@ class _MaterialAddEditProductState extends State<MaterialAddEditProduct> {
       return;
     }
     _form.currentState.save();
-    Provider.of<Products>(context, listen: false).addProduct(_editedProduct);
+    if (_editedProduct.id != null) {
+      Provider.of<Products>(context, listen: false)
+          .upadteProduct(_editedProduct.id, _editedProduct);
+    } else {
+      Provider.of<Products>(context, listen: false).addProduct(_editedProduct);
+    }
+
     Navigator.of(context).pop();
   }
 
@@ -88,6 +126,7 @@ class _MaterialAddEditProductState extends State<MaterialAddEditProduct> {
             child: ListView(
               children: <Widget>[
                 TextFormField(
+                  initialValue: _initValues['title'],
                   decoration: InputDecoration(
                     labelText: 'Title',
                     // errorStyle: null,
@@ -103,6 +142,7 @@ class _MaterialAddEditProductState extends State<MaterialAddEditProduct> {
                       id: _editedProduct.id,
                       imageUrl: _editedProduct.imageUrl,
                       price: _editedProduct.price,
+                      isFavorite: _editedProduct.isFavorite,
                     );
                   },
                   validator: (String value) {
@@ -113,6 +153,7 @@ class _MaterialAddEditProductState extends State<MaterialAddEditProduct> {
                   },
                 ),
                 TextFormField(
+                  initialValue: _initValues['price'],
                   decoration: InputDecoration(labelText: 'Price'),
                   textInputAction: TextInputAction.next,
                   keyboardType: TextInputType.numberWithOptions(decimal: true),
@@ -139,10 +180,12 @@ class _MaterialAddEditProductState extends State<MaterialAddEditProduct> {
                       id: _editedProduct.id,
                       imageUrl: _editedProduct.imageUrl,
                       price: double.parse(value),
+                      isFavorite: _editedProduct.isFavorite,
                     );
                   },
                 ),
                 TextFormField(
+                  initialValue: _initValues['description'],
                   decoration: InputDecoration(labelText: 'Description'),
                   maxLines: 3,
                   keyboardType: TextInputType.multiline,
@@ -153,6 +196,7 @@ class _MaterialAddEditProductState extends State<MaterialAddEditProduct> {
                       id: _editedProduct.id,
                       imageUrl: _editedProduct.imageUrl,
                       price: _editedProduct.price,
+                      isFavorite: _editedProduct.isFavorite,
                     );
                   },
                   validator: (String value) {
@@ -197,6 +241,7 @@ class _MaterialAddEditProductState extends State<MaterialAddEditProduct> {
                             id: _editedProduct.id,
                             imageUrl: value,
                             price: _editedProduct.price,
+                            isFavorite: _editedProduct.isFavorite,
                           );
                         },
                         validator: (String value) {

@@ -5,6 +5,10 @@ import 'package:shop_app/providers/product.dart';
 import 'package:shop_app/providers/products.dart';
 
 class CupertinoAddEditProduct extends StatefulWidget {
+  final productId;
+
+  CupertinoAddEditProduct(this.productId);
+
   @override
   _CupertinoAddEditProductState createState() =>
       _CupertinoAddEditProductState();
@@ -26,6 +30,8 @@ class _CupertinoAddEditProductState extends State<CupertinoAddEditProduct> {
   /* GlobalKey<FormState> */
   final _form = GlobalKey<FormState>();
 
+  bool isInit = true;
+
   Product _editedProduct = Product(
     price: null,
     imageUrl: null,
@@ -34,10 +40,29 @@ class _CupertinoAddEditProductState extends State<CupertinoAddEditProduct> {
     description: null,
   );
 
+  // can't assign initValue
+  // using controller instead
+
   @override
   void initState() {
     _imageUrlFocusNode.addListener(_updateImageUrl);
+
     super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    if (isInit && widget.productId != null) {
+      _editedProduct =
+          Provider.of<Products>(context).findById(widget.productId);
+      _imageUrlController.text = _editedProduct.imageUrl;
+      _titleController.text = _editedProduct.title;
+      _priceController.text = _editedProduct.price.toString();
+      _descriptionController.text = _editedProduct.description;
+    }
+
+    isInit = false;
+    super.didChangeDependencies();
   }
 
   @override
@@ -105,10 +130,17 @@ class _CupertinoAddEditProductState extends State<CupertinoAddEditProduct> {
       title: _titleController.text,
       id: _editedProduct.id,
       imageUrl: _imageUrlController.text,
+      isFavorite: _editedProduct.isFavorite,
       price: double.parse(_priceController.text),
     );
 
-    Provider.of<Products>(context).addProduct(_editedProduct);
+    if (widget.productId != null) {
+      Provider.of<Products>(context)
+          .upadteProduct(_editedProduct.id, _editedProduct);
+    } else {
+      Provider.of<Products>(context).addProduct(_editedProduct);
+    }
+
     Navigator.of(context).pop();
   }
 
