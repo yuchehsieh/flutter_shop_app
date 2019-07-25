@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:shop_app/android/screens/add_edit_product_screen.dart';
+import 'package:shop_app/providers/products.dart';
 
 class MaterialUserProductItem extends StatelessWidget {
   final String id;
@@ -34,7 +36,31 @@ class MaterialUserProductItem extends StatelessWidget {
           ),
           IconButton(
             icon: Icon(Icons.delete),
-            onPressed: () {},
+            onPressed: () {
+              return showDialog(
+                context: context,
+                builder: (ctx) => AlertDialog(
+                  title: Text('Are you sure to delete'),
+                  content: Text('Do you want to remove item from the cart'),
+                  actions: <Widget>[
+                    FlatButton(
+                      child: Text('No'),
+                      onPressed: () {
+                        Navigator.of(ctx).pop();
+                      },
+                    ),
+                    FlatButton(
+                      child: Text('Yes'),
+                      onPressed: () {
+                        Navigator.of(ctx).pop();
+                        Provider.of<Products>(context, listen: false)
+                            .deleteProduct(id);
+                      },
+                    ),
+                  ],
+                ),
+              );
+            },
             color: Theme.of(context).errorColor,
           ),
         ],

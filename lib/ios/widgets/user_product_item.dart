@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:provider/provider.dart';
 import 'package:shop_app/ios/screens/add_edit_product_screen.dart';
+import 'package:shop_app/providers/products.dart';
 
 class CupertinoUserProductItem extends StatelessWidget {
   final String id;
@@ -39,7 +41,34 @@ class CupertinoUserProductItem extends StatelessWidget {
               // size: 20,
               color: CupertinoColors.destructiveRed,
             ),
-            onPressed: () {},
+            onPressed: () {
+              showCupertinoDialog(
+                context: context,
+                builder: (context) {
+                  return CupertinoAlertDialog(
+                    title: Text('Are you sure to Delete'),
+                    content: Text('It won\'t recover, make sure to do this'),
+                    actions: <Widget>[
+                      CupertinoDialogAction(
+                        isDefaultAction: true,
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: Text('Let me think!'),
+                      ),
+                      CupertinoDialogAction(
+                        isDestructiveAction: true,
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                          Provider.of<Products>(context).deleteProduct(id);
+                        },
+                        child: Text('Delete'),
+                      )
+                    ],
+                  );
+                },
+              );
+            },
           ),
         ],
       ),
