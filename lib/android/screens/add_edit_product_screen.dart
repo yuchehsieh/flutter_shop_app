@@ -103,12 +103,34 @@ class _MaterialAddEditProductState extends State<MaterialAddEditProduct> {
       Provider.of<Products>(context, listen: false)
           .upadteProduct(_editedProduct.id, _editedProduct);
     } else {
-      await Provider.of<Products>(context, listen: false)
-          .addProduct(_editedProduct);
-      setState(() {
-        _isLoading = false;
-      });
-      Navigator.of(context).pop();
+      try {
+        final response = await Provider.of<Products>(context, listen: false)
+            .addProduct(_editedProduct);
+        setState(() {
+          _isLoading = false;
+        });
+        print(response);
+        Navigator.of(context).pop();
+      } catch (e) {
+        await showDialog(
+          context: context,
+          builder: (ctx) => AlertDialog(
+            title: Text('Error'),
+            content: Text(e.toString()),
+            actions: <Widget>[
+              FlatButton(
+                child: Text('ok'),
+                onPressed: () {
+                  Navigator.of(ctx).pop();
+                },
+              ),
+            ],
+          ),
+        );
+        setState(() {
+          _isLoading = false;
+        });
+      }
     }
   }
 

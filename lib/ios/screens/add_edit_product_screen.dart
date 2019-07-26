@@ -143,12 +143,31 @@ class _CupertinoAddEditProductState extends State<CupertinoAddEditProduct> {
       Provider.of<Products>(context)
           .upadteProduct(_editedProduct.id, _editedProduct);
     } else {
-      await Provider.of<Products>(context, listen: false)
-          .addProduct(_editedProduct);
-      setState(() {
-        _isLoading = false;
-      });
-      Navigator.of(context).pop();
+      try {
+        await Provider.of<Products>(context, listen: false)
+            .addProduct(_editedProduct);
+        setState(() {
+          _isLoading = false;
+        });
+        Navigator.of(context).pop();
+      } catch (e) {
+        await showCupertinoDialog(
+          context: context,
+          builder: (ctx) => CupertinoAlertDialog(
+            title: Text('Error'),
+            content: Text(e.toString()),
+            actions: <Widget>[
+              CupertinoDialogAction(
+                onPressed: () => Navigator.of(ctx).pop(),
+                child: Text('Ok'),
+              ),
+            ],
+          ),
+        );
+        setState(() {
+          _isLoading = false;
+        });
+      }
     }
   }
 

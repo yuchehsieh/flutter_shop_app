@@ -54,11 +54,10 @@ class Products with ChangeNotifier {
     return _items.firstWhere((product) => product.id == id);
   }
 
-  Future<void> addProduct(Product product) async {
+  Future addProduct(Product product) async {
     const url = 'https://f2ewk11.firebaseio.com/products.json';
-    var response;
     try {
-      response = await http.post(url,
+      final response = await http.post(url,
           body: json.encode({
             'title': product.title,
             'imageUrl': product.imageUrl,
@@ -66,23 +65,24 @@ class Products with ChangeNotifier {
             'description': product.description,
             'isFavorite': product.isFavorite,
           }));
+      print(json.decode(response.body));
+      // -> {name: -LkgQKNUj9SEK5eMJwyy}
+
+      final newProduct = Product(
+        title: product.title,
+        price: product.price,
+        description: product.description,
+        imageUrl: product.imageUrl,
+        id: json.decode(response.body)['name'],
+      );
+      _items.add(newProduct);
+      // _items.insert(0, newProduct); /* at the start of the List */
+      notifyListeners();
+      return response;
     } catch (e) {
       print('error dude!');
+      throw e;
     }
-    print(json.decode(response.body));
-    // -> {name: -LkgQKNUj9SEK5eMJwyy}
-
-    final newProduct = Product(
-      title: product.title,
-      price: product.price,
-      description: product.description,
-      imageUrl: product.imageUrl,
-      id: json.decode(response.body)['name'],
-    );
-    _items.add(newProduct);
-    // _items.insert(0, newProduct); /* at the start of the List */
-    notifyListeners();
-    return response;
   }
 
   void upadteProduct(String productId, Product newProduct) {
