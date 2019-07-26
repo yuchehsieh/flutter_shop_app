@@ -73,6 +73,7 @@ class MaterialProdcutDetailScreen extends StatelessWidget {
               ],
               icon: Icon(Icons.more_vert),
             ),
+            // AnimatedIcon(icon: AnimatedIcons.home_menu, progress: controller
           ],
         ),
       ),

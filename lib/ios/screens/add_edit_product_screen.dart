@@ -30,7 +30,8 @@ class _CupertinoAddEditProductState extends State<CupertinoAddEditProduct> {
   /* GlobalKey<FormState> */
   final _form = GlobalKey<FormState>();
 
-  bool isInit = true;
+  bool _isInit = true;
+  bool _isLoading = false;
 
   Product _editedProduct = Product(
     price: null,
@@ -52,7 +53,7 @@ class _CupertinoAddEditProductState extends State<CupertinoAddEditProduct> {
 
   @override
   void didChangeDependencies() {
-    if (isInit && widget.productId != null) {
+    if (_isInit && widget.productId != null) {
       _editedProduct =
           Provider.of<Products>(context).findById(widget.productId);
       _imageUrlController.text = _editedProduct.imageUrl;
@@ -61,7 +62,7 @@ class _CupertinoAddEditProductState extends State<CupertinoAddEditProduct> {
       _descriptionController.text = _editedProduct.description;
     }
 
-    isInit = false;
+    _isInit = false;
     super.didChangeDependencies();
   }
 
@@ -90,7 +91,11 @@ class _CupertinoAddEditProductState extends State<CupertinoAddEditProduct> {
     }
   }
 
-  void _saveForm() {
+  void _saveForm() async {
+    setState(() {
+      _isLoading = true;
+    });
+
     /* all String */
     final title = _titleController.text;
     final price = _priceController.text;
@@ -138,10 +143,13 @@ class _CupertinoAddEditProductState extends State<CupertinoAddEditProduct> {
       Provider.of<Products>(context)
           .upadteProduct(_editedProduct.id, _editedProduct);
     } else {
-      Provider.of<Products>(context).addProduct(_editedProduct);
+      await Provider.of<Products>(context, listen: false)
+          .addProduct(_editedProduct);
+      setState(() {
+        _isLoading = false;
+      });
+      Navigator.of(context).pop();
     }
-
-    Navigator.of(context).pop();
   }
 
   void _showErrorMessage(List<String> errorMessage) {
@@ -241,137 +249,143 @@ class _CupertinoAddEditProductState extends State<CupertinoAddEditProduct> {
         ),
       ),
       child: SafeArea(
-        child: GestureDetector(
-          behavior: HitTestBehavior.opaque,
-          onTap: () =>
-              // SystemChannels.textInput.invokeMethod('TextInput.hide'),
-              FocusScope.of(context).unfocus(),
-          onPanDown: (_) => FocusScope.of(context).requestFocus(FocusNode()),
-          child: Form(
-            key: _form,
-            child: ListView(
-              padding: EdgeInsets.only(bottom: 30),
-              children: <Widget>[
-                CupertinoTextField(
-                  prefix: Padding(
-                    padding: fieldPadding,
-                    child: Icon(
-                      CupertinoIcons.person_solid,
-                      color: _titleFocusNode.hasFocus
-                          ? CupertinoColors.activeBlue
-                          : CupertinoColors.lightBackgroundGray,
-                      size: 28.0,
-                    ),
-                  ),
-                  focusNode: _titleFocusNode,
-                  padding: fieldPadding,
-                  clearButtonMode: _titleFocusNode.hasFocus
-                      ? OverlayVisibilityMode.editing
-                      : OverlayVisibilityMode.never,
-                  textCapitalization: TextCapitalization.words,
-                  autocorrect: false,
-                  decoration: fieldDecoration,
-                  placeholder: 'Title',
-                  controller: _titleController,
-                  onSubmitted: (_) {
-                    FocusScope.of(context).requestFocus(_priceFoucusNode);
-                  },
-                ),
-                CupertinoTextField(
-                  prefix: Padding(
-                    padding: fieldPadding,
-                    child: Icon(
-                      CupertinoIcons.tag,
-                      color: _priceFoucusNode.hasFocus
-                          ? CupertinoColors.activeBlue
-                          : CupertinoColors.lightBackgroundGray,
-                      size: 28.0,
-                    ),
-                  ),
-                  keyboardType: TextInputType.numberWithOptions(decimal: true),
-                  padding: fieldPadding,
-                  decoration: fieldDecoration,
-                  clearButtonMode: _priceFoucusNode.hasFocus
-                      ? OverlayVisibilityMode.editing
-                      : OverlayVisibilityMode.never,
-                  placeholder: 'Price',
-                  textInputAction: TextInputAction.done,
-                  focusNode: _priceFoucusNode,
-                  onSubmitted: (_) {
-                    FocusScope.of(context).requestFocus(_descriptionFocusNode);
-                  },
-                  controller: _priceController,
-                ),
-                CupertinoTextField(
-                  prefix: Padding(
-                    padding: fieldPadding,
-                    child: Icon(
-                      CupertinoIcons.right_chevron,
-                      color: _descriptionFocusNode.hasFocus
-                          ? CupertinoColors.activeBlue
-                          : CupertinoColors.lightBackgroundGray,
-                      size: 28.0,
-                    ),
-                  ),
-                  padding: fieldPadding,
-                  decoration: fieldDecoration,
-                  clearButtonMode: _descriptionFocusNode.hasFocus
-                      ? OverlayVisibilityMode.editing
-                      : OverlayVisibilityMode.never,
-                  placeholder: 'Description',
-                  keyboardType: TextInputType.multiline,
-                  maxLines: 3,
-                  focusNode: _descriptionFocusNode,
-                  controller: _descriptionController,
-                ),
-                Padding(
-                  padding: fieldPadding,
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.end,
+        child: _isLoading
+            ? Center(child: CupertinoActivityIndicator(radius: 10))
+            : GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: () =>
+                    // SystemChannels.textInput.invokeMethod('TextInput.hide'),
+                    FocusScope.of(context).unfocus(),
+                onPanDown: (_) =>
+                    FocusScope.of(context).requestFocus(FocusNode()),
+                child: Form(
+                  key: _form,
+                  child: ListView(
+                    padding: EdgeInsets.only(bottom: 30),
                     children: <Widget>[
-                      Container(
-                        width: 100,
-                        height: 100,
-                        margin: EdgeInsets.only(top: 8, right: 10),
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                              width: 1,
-                              color: _imageUrlFocusNode.hasFocus
-                                  ? CupertinoColors.activeBlue
-                                  : CupertinoColors.inactiveGray),
+                      CupertinoTextField(
+                        prefix: Padding(
+                          padding: fieldPadding,
+                          child: Icon(
+                            CupertinoIcons.person_solid,
+                            color: _titleFocusNode.hasFocus
+                                ? CupertinoColors.activeBlue
+                                : CupertinoColors.lightBackgroundGray,
+                            size: 28.0,
+                          ),
                         ),
-                        child: _imageUrlController.text.isEmpty
-                            ? Text(
-                                'Enter a URL',
-                                style: TextStyle(
-                                    color: CupertinoColors.inactiveGray),
-                              )
-                            : FittedBox(
-                                child: Image.network(_imageUrlController.text),
-                                fit: BoxFit.cover,
-                              ),
+                        focusNode: _titleFocusNode,
+                        padding: fieldPadding,
+                        clearButtonMode: _titleFocusNode.hasFocus
+                            ? OverlayVisibilityMode.editing
+                            : OverlayVisibilityMode.never,
+                        textCapitalization: TextCapitalization.words,
+                        autocorrect: false,
+                        decoration: fieldDecoration,
+                        placeholder: 'Title',
+                        controller: _titleController,
+                        onSubmitted: (_) {
+                          FocusScope.of(context).requestFocus(_priceFoucusNode);
+                        },
                       ),
-                      Expanded(
-                        child: CupertinoTextField(
-                          decoration: fieldDecoration,
-                          placeholder: 'Image url',
-                          keyboardType: TextInputType.url,
-                          textInputAction: TextInputAction.done,
-                          clearButtonMode: _imageUrlFocusNode.hasFocus
-                              ? OverlayVisibilityMode.editing
-                              : OverlayVisibilityMode.never,
-                          focusNode: _imageUrlFocusNode,
-                          controller: _imageUrlController,
-                          onSubmitted: (_) => _saveForm(),
+                      CupertinoTextField(
+                        prefix: Padding(
+                          padding: fieldPadding,
+                          child: Icon(
+                            CupertinoIcons.tag,
+                            color: _priceFoucusNode.hasFocus
+                                ? CupertinoColors.activeBlue
+                                : CupertinoColors.lightBackgroundGray,
+                            size: 28.0,
+                          ),
+                        ),
+                        keyboardType:
+                            TextInputType.numberWithOptions(decimal: true),
+                        padding: fieldPadding,
+                        decoration: fieldDecoration,
+                        clearButtonMode: _priceFoucusNode.hasFocus
+                            ? OverlayVisibilityMode.editing
+                            : OverlayVisibilityMode.never,
+                        placeholder: 'Price',
+                        textInputAction: TextInputAction.done,
+                        focusNode: _priceFoucusNode,
+                        onSubmitted: (_) {
+                          FocusScope.of(context)
+                              .requestFocus(_descriptionFocusNode);
+                        },
+                        controller: _priceController,
+                      ),
+                      CupertinoTextField(
+                        prefix: Padding(
+                          padding: fieldPadding,
+                          child: Icon(
+                            CupertinoIcons.right_chevron,
+                            color: _descriptionFocusNode.hasFocus
+                                ? CupertinoColors.activeBlue
+                                : CupertinoColors.lightBackgroundGray,
+                            size: 28.0,
+                          ),
+                        ),
+                        padding: fieldPadding,
+                        decoration: fieldDecoration,
+                        clearButtonMode: _descriptionFocusNode.hasFocus
+                            ? OverlayVisibilityMode.editing
+                            : OverlayVisibilityMode.never,
+                        placeholder: 'Description',
+                        keyboardType: TextInputType.multiline,
+                        maxLines: 3,
+                        focusNode: _descriptionFocusNode,
+                        controller: _descriptionController,
+                      ),
+                      Padding(
+                        padding: fieldPadding,
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: <Widget>[
+                            Container(
+                              width: 100,
+                              height: 100,
+                              margin: EdgeInsets.only(top: 8, right: 10),
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                    width: 1,
+                                    color: _imageUrlFocusNode.hasFocus
+                                        ? CupertinoColors.activeBlue
+                                        : CupertinoColors.inactiveGray),
+                              ),
+                              child: _imageUrlController.text.isEmpty
+                                  ? Text(
+                                      'Enter a URL',
+                                      style: TextStyle(
+                                          color: CupertinoColors.inactiveGray),
+                                    )
+                                  : FittedBox(
+                                      child: Image.network(
+                                          _imageUrlController.text),
+                                      fit: BoxFit.cover,
+                                    ),
+                            ),
+                            Expanded(
+                              child: CupertinoTextField(
+                                decoration: fieldDecoration,
+                                placeholder: 'Image url',
+                                keyboardType: TextInputType.url,
+                                textInputAction: TextInputAction.done,
+                                clearButtonMode: _imageUrlFocusNode.hasFocus
+                                    ? OverlayVisibilityMode.editing
+                                    : OverlayVisibilityMode.never,
+                                focusNode: _imageUrlFocusNode,
+                                controller: _imageUrlController,
+                                onSubmitted: (_) => _saveForm(),
+                              ),
+                            )
+                          ],
                         ),
                       )
                     ],
                   ),
-                )
-              ],
-            ),
-          ),
-        ),
+                ),
+              ),
       ),
     );
   }
