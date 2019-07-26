@@ -91,7 +91,7 @@ class _CupertinoAddEditProductState extends State<CupertinoAddEditProduct> {
     }
   }
 
-  void _saveForm() async {
+  Future<void> _saveForm() async {
     setState(() {
       _isLoading = true;
     });
@@ -146,10 +146,6 @@ class _CupertinoAddEditProductState extends State<CupertinoAddEditProduct> {
       try {
         await Provider.of<Products>(context, listen: false)
             .addProduct(_editedProduct);
-        setState(() {
-          _isLoading = false;
-        });
-        Navigator.of(context).pop();
       } catch (e) {
         await showCupertinoDialog(
           context: context,
@@ -164,9 +160,11 @@ class _CupertinoAddEditProductState extends State<CupertinoAddEditProduct> {
             ],
           ),
         );
+      } finally {
         setState(() {
           _isLoading = false;
         });
+        Navigator.of(context).pop();
       }
     }
   }

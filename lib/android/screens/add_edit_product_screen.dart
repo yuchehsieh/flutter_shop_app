@@ -89,7 +89,7 @@ class _MaterialAddEditProductState extends State<MaterialAddEditProduct> {
     }
   }
 
-  void _saveForm() async {
+  Future<void> _saveForm() async {
     setState(() {
       _isLoading = true;
     });
@@ -106,11 +106,6 @@ class _MaterialAddEditProductState extends State<MaterialAddEditProduct> {
       try {
         final response = await Provider.of<Products>(context, listen: false)
             .addProduct(_editedProduct);
-        setState(() {
-          _isLoading = false;
-        });
-        print(response);
-        Navigator.of(context).pop();
       } catch (e) {
         await showDialog(
           context: context,
@@ -127,9 +122,11 @@ class _MaterialAddEditProductState extends State<MaterialAddEditProduct> {
             ],
           ),
         );
+      } finally {
         setState(() {
           _isLoading = false;
         });
+        Navigator.of(context).pop();
       }
     }
   }
