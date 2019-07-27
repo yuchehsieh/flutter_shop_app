@@ -7,6 +7,7 @@ import 'package:shop_app/android/widgets/badge.dart';
 
 import 'package:shop_app/android/widgets/products_grid.dart';
 import 'package:shop_app/providers/cart.dart';
+import 'package:shop_app/providers/products.dart';
 
 enum FilterOptions {
   Favorites,
@@ -22,6 +23,39 @@ class MaterialProductsOverViewScreen extends StatefulWidget {
 class _MaterialProductsOverViewScreenState
     extends State<MaterialProductsOverViewScreen> {
   bool _showOnlyFavorites = false;
+  bool _isInit = true;
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    /* WON'T WORK 
+      Provider.of<Products>(context).fetchAndSetProducts();
+    */
+
+    /* SOME HACK MAY WORK 
+      Future.delayed(Duration.zero).then(() {
+        Provider.of<Products>(context).fetchAndSetProducts(); 
+      })
+    */
+
+    super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    if (_isInit) {
+      Provider.of<Products>(context, listen: false)
+          .fetchAndSetProducts()
+          .then((_) {
+        setState(() {
+          _isLoading = false;
+        });
+      });
+    }
+
+    _isInit = false;
+    super.didChangeDependencies();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -67,7 +101,9 @@ class _MaterialProductsOverViewScreenState
         ],
       ),
       drawer: AppDrawer(),
-      body: MaterialProductsGrid(_showOnlyFavorites),
+      body: _isLoading
+          ? Center(child: CircularProgressIndicator())
+          : MaterialProductsGrid(_showOnlyFavorites),
     );
   }
 }

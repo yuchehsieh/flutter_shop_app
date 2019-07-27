@@ -6,6 +6,7 @@ import 'package:shop_app/android/widgets/badge.dart';
 import 'package:shop_app/ios/screens/cart_screen.dart';
 import 'package:shop_app/ios/widgets/products_grid.dart';
 import 'package:shop_app/providers/cart.dart';
+import 'package:shop_app/providers/products.dart';
 
 enum FiltersOptions { Favorites, All, Cancel }
 
@@ -18,6 +19,24 @@ class CupertinoProductsOverviewScreen extends StatefulWidget {
 class _CupertinoProductsOverviewScreenState
     extends State<CupertinoProductsOverviewScreen> {
   bool _showOnlyFavorite = false;
+  bool _isInit = true;
+  bool _isLoading = true;
+
+  @override
+  void didChangeDependencies() {
+    if (_isInit) {
+      Provider.of<Products>(context, listen: false)
+          .fetchAndSetProducts()
+          .then((_) {
+        setState(() {
+          _isLoading = false;
+        });
+      });
+    }
+
+    _isInit = false;
+    super.didChangeDependencies();
+  }
 
   Future<FiltersOptions> _showCupertinoActionSheet(BuildContext context) {
     return showCupertinoModalPopup(
@@ -97,7 +116,9 @@ class _CupertinoProductsOverviewScreenState
         ),
       ),
       child: SafeArea(
-        child: Scaffold(body: CupertinoProductGrid(_showOnlyFavorite)),
+        child: _isLoading
+            ? Center(child: CupertinoActivityIndicator(radius: 10))
+            : Scaffold(body: CupertinoProductGrid(_showOnlyFavorite)),
       ),
     );
   }
