@@ -140,33 +140,40 @@ class _CupertinoAddEditProductState extends State<CupertinoAddEditProduct> {
     );
 
     if (widget.productId != null) {
-      Provider.of<Products>(context)
-          .upadteProduct(_editedProduct.id, _editedProduct);
+      try {
+        await Provider.of<Products>(context)
+            .upadteProduct(_editedProduct.id, _editedProduct);
+      } catch (e) {
+        await _showAlertWithError(e.toString());
+      }
     } else {
       try {
         await Provider.of<Products>(context, listen: false)
             .addProduct(_editedProduct);
       } catch (e) {
-        await showCupertinoDialog(
-          context: context,
-          builder: (ctx) => CupertinoAlertDialog(
-            title: Text('Error'),
-            content: Text(e.toString()),
-            actions: <Widget>[
-              CupertinoDialogAction(
-                onPressed: () => Navigator.of(ctx).pop(),
-                child: Text('Ok'),
-              ),
-            ],
-          ),
-        );
-      } finally {
-        setState(() {
-          _isLoading = false;
-        });
-        Navigator.of(context).pop();
+        await _showAlertWithError(e.toString());
       }
     }
+    setState(() {
+      _isLoading = false;
+    });
+    Navigator.of(context).pop();
+  }
+
+  Future<void> _showAlertWithError(String e) {
+    return showCupertinoDialog(
+      context: context,
+      builder: (ctx) => CupertinoAlertDialog(
+        title: Text('Error'),
+        content: Text(e),
+        actions: <Widget>[
+          CupertinoDialogAction(
+            onPressed: () => Navigator.of(ctx).pop(),
+            child: Text('Ok'),
+          ),
+        ],
+      ),
+    );
   }
 
   void _showErrorMessage(List<String> errorMessage) {

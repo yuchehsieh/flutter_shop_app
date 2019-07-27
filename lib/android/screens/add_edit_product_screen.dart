@@ -100,35 +100,42 @@ class _MaterialAddEditProductState extends State<MaterialAddEditProduct> {
     }
     _form.currentState.save();
     if (_editedProduct.id != null) {
-      Provider.of<Products>(context, listen: false)
-          .upadteProduct(_editedProduct.id, _editedProduct);
+      try {
+        final response = await Provider.of<Products>(context, listen: false)
+            .upadteProduct(_editedProduct.id, _editedProduct);
+      } catch (e) {
+        await _showAlertWithError(e.toString());
+      }
     } else {
       try {
         final response = await Provider.of<Products>(context, listen: false)
             .addProduct(_editedProduct);
       } catch (e) {
-        await showDialog(
-          context: context,
-          builder: (ctx) => AlertDialog(
-            title: Text('Error'),
-            content: Text(e.toString()),
-            actions: <Widget>[
-              FlatButton(
-                child: Text('ok'),
-                onPressed: () {
-                  Navigator.of(ctx).pop();
-                },
-              ),
-            ],
-          ),
-        );
-      } finally {
-        setState(() {
-          _isLoading = false;
-        });
-        Navigator.of(context).pop();
+        await _showAlertWithError(e.toString());
       }
     }
+    setState(() {
+      _isLoading = false;
+    });
+    Navigator.of(context).pop();
+  }
+
+  Future<void> _showAlertWithError(String error) {
+    return showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text('Error'),
+        content: Text(error),
+        actions: <Widget>[
+          FlatButton(
+            child: Text('ok'),
+            onPressed: () {
+              Navigator.of(ctx).pop();
+            },
+          ),
+        ],
+      ),
+    );
   }
 
   @override
