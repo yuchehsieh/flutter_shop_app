@@ -17,6 +17,11 @@ class CupertinoUserProductItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scaffold = Scaffold.of(context);
+    final snackBar = SnackBar(
+      content: Text('Fail to delete item :('),
+      behavior: SnackBarBehavior.floating,
+    );
     return ListTile(
       leading: CircleAvatar(
         backgroundImage: NetworkImage(imageUrl),
@@ -58,9 +63,14 @@ class CupertinoUserProductItem extends StatelessWidget {
                       ),
                       CupertinoDialogAction(
                         isDestructiveAction: true,
-                        onPressed: () {
+                        onPressed: () async {
                           Navigator.of(context).pop();
-                          Provider.of<Products>(context).deleteProduct(id);
+                          try {
+                            await Provider.of<Products>(context)
+                                .deleteProduct(id);
+                          } catch (e) {
+                            scaffold.showSnackBar(snackBar);
+                          }
                         },
                         child: Text('Delete'),
                       )

@@ -59,52 +59,56 @@ class CupertinoUserProductsScreen extends StatelessWidget {
       //     },
       //   ),
       // ),
-      child: Scaffold(
-        body: CustomScrollView(
-          // If left unspecified, the [CustomScrollView] appends an
-          // [AlwaysScrollableScrollPhysics]. Behind the scene, the ScrollableState
-          // will attach that [AlwaysScrollableScrollPhysics] to the output of
-          // [ScrollConfiguration.of] which will be a [ClampingScrollPhysics]
-          // on Android.
-          // To demonstrate the iOS behavior in this demo and to ensure that the list
-          // always scrolls, we specifically use a [BouncingScrollPhysics] combined
-          // with a [AlwaysScrollableScrollPhysics]
-          physics: const BouncingScrollPhysics(
-              parent: AlwaysScrollableScrollPhysics()),
-          slivers: <Widget>[
-            CupertinoSliverNavigationBar(
-              automaticallyImplyTitle: false,
-              largeTitle: const Text('Manage Product'),
-              // We're specifying a back label here because the previous page
-              // is a Material page. CupertinoPageRoutes could auto-populate
-              // these back labels.
-              previousPageTitle: 'Cupertino',
-              // trailing: Text('Hi, Supervisor', style: TextStyle(fontSize: 14)),
-            ),
-            CupertinoSliverRefreshControl(
-              onRefresh: () => _onRefreshProduct(context),
-            ),
-            SliverSafeArea(
-              top: false, // Top safe area is consumed by the navigation bar.
-              sliver: SliverList(
-                delegate: SliverChildBuilderDelegate(
-                  (BuildContext context, int index) {
-                    return Column(
-                      children: <Widget>[
-                        CupertinoUserProductItem(
-                          productData.items[index].id,
-                          productData.items[index].title,
-                          productData.items[index].imageUrl,
-                        ),
-                        Divider(),
-                      ],
-                    );
-                  },
-                  childCount: productData.items.length,
+
+      child: SafeArea(
+        top: false,
+        child: Scaffold(
+          body: CustomScrollView(
+            // If left unspecified, the [CustomScrollView] appends an
+            // [AlwaysScrollableScrollPhysics]. Behind the scene, the ScrollableState
+            // will attach that [AlwaysScrollableScrollPhysics] to the output of
+            // [ScrollConfiguration.of] which will be a [ClampingScrollPhysics]
+            // on Android.
+            // To demonstrate the iOS behavior in this demo and to ensure that the list
+            // always scrolls, we specifically use a [BouncingScrollPhysics] combined
+            // with a [AlwaysScrollableScrollPhysics]
+            physics: const BouncingScrollPhysics(
+                parent: AlwaysScrollableScrollPhysics()),
+            slivers: <Widget>[
+              CupertinoSliverNavigationBar(
+                automaticallyImplyTitle: false,
+                largeTitle: const Text('Manage Product'),
+                // We're specifying a back label here because the previous page
+                // is a Material page. CupertinoPageRoutes could auto-populate
+                // these back labels.
+                previousPageTitle: 'Cupertino',
+                // trailing: Text('Hi, Supervisor', style: TextStyle(fontSize: 14)),
+              ),
+              CupertinoSliverRefreshControl(
+                onRefresh: () => _onRefreshProduct(context),
+              ),
+              SliverSafeArea(
+                top: false, // Top safe area is consumed by the navigation bar.
+                sliver: SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                    (BuildContext context, int index) {
+                      return Column(
+                        children: <Widget>[
+                          CupertinoUserProductItem(
+                            productData.items[index].id,
+                            productData.items[index].title,
+                            productData.items[index].imageUrl,
+                          ),
+                          Divider(),
+                        ],
+                      );
+                    },
+                    childCount: productData.items.length,
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
 

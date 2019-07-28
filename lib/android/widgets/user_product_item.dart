@@ -16,6 +16,11 @@ class MaterialUserProductItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scaffold = Scaffold.of(context);
+    final snackBar = SnackBar(
+      content: Text('Fail to delete item :('),
+      behavior: SnackBarBehavior.floating,
+    );
     return ListTile(
       leading: CircleAvatar(
         backgroundImage: NetworkImage(imageUrl),
@@ -37,7 +42,7 @@ class MaterialUserProductItem extends StatelessWidget {
           IconButton(
             icon: Icon(Icons.delete),
             onPressed: () {
-              return showDialog(
+              showDialog(
                 context: context,
                 builder: (ctx) => AlertDialog(
                   title: Text('Are you sure to delete'),
@@ -51,10 +56,14 @@ class MaterialUserProductItem extends StatelessWidget {
                     ),
                     FlatButton(
                       child: Text('Yes'),
-                      onPressed: () {
+                      onPressed: () async {
                         Navigator.of(ctx).pop();
-                        Provider.of<Products>(context, listen: false)
-                            .deleteProduct(id);
+                        try {
+                          await Provider.of<Products>(context, listen: false)
+                              .deleteProduct(id);
+                        } catch (e) {
+                          scaffold.showSnackBar(snackBar);
+                        }
                       },
                     ),
                   ],
