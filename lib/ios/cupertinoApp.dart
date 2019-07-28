@@ -17,8 +17,8 @@ class MyCupertinoApp extends StatelessWidget {
               title: Text('Shop'),
             ),
             BottomNavigationBarItem(
-              icon: Icon(CupertinoIcons.padlock_solid),
-              title: Text('Cart'),
+              icon: Icon(CupertinoIcons.paw),
+              title: Text('Orders'),
             ),
             BottomNavigationBarItem(
               icon: Icon(CupertinoIcons.pen),

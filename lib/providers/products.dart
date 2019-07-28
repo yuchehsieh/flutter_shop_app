@@ -59,8 +59,11 @@ class Products with ChangeNotifier {
     const url = 'https://f2ewk11.firebaseio.com/products.json';
     try {
       final response = await http.get(url);
-      final Map<String, dynamic> extractedData = json.decode(response.body);
       final List<Product> loadedProducts = [];
+      final Map<String, dynamic> extractedData = json.decode(response.body);
+      if (extractedData == null) {
+        return;
+      }
       extractedData.forEach((key, value) {
         loadedProducts.add(Product(
           title: value['title'],
@@ -90,7 +93,6 @@ class Products with ChangeNotifier {
         _items = loadedProducts;
         notifyListeners();
       });
-      return response;
       /* print(json.decode(response.body));
         {
           -LkgOQHCftVIHQYHfoMv: {description: desssssssssss, imageUrl: https://timedotcom.files.wordpress.com/2015/06/521811839-copy.jpg, isFavorite: false, price: 19.9, title: test},
