@@ -8,68 +8,6 @@ import 'package:shop_app/providers/cart.dart' show Cart;
 import 'package:shop_app/providers/orders.dart';
 
 class CupertinoCartScreen extends StatelessWidget {
-  Future<bool> showConfirmBeforeMakeOrder(BuildContext context) {
-    return showCupertinoDialog(
-      context: context,
-      builder: (context) {
-        return CupertinoAlertDialog(
-          title: Text('Add all cart items to order ?'),
-          // content: Text('It won\'t recover, make sure to do this'),
-          actions: <Widget>[
-            CupertinoDialogAction(
-              isDefaultAction: true,
-              onPressed: () {
-                Navigator.of(context).pop(true);
-              },
-              child: Text('Yes'),
-            ),
-            CupertinoDialogAction(
-              onPressed: () {
-                Navigator.of(context).pop(false);
-              },
-              child: Text('Let me think'),
-            )
-          ],
-        );
-      },
-    );
-  }
-
-  void showSuccess(BuildContext context) {
-    showCupertinoDialog(
-      context: context,
-      builder: (context) {
-        return CupertinoAlertDialog(
-          title: Text('Success'),
-          // content: Text('It won\'t recover, make sure to do this'),
-          actions: <Widget>[
-            CupertinoDialogAction(
-              isDefaultAction: true,
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text('Ok'),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  void onConfirmOrder(Cart cart, BuildContext context) async {
-    final bool isConfirmOrder = await showConfirmBeforeMakeOrder(context);
-    if (isConfirmOrder) {
-      Provider.of<Orders>(context).addOrder(
-        cart.items.values.toList(),
-        cart.totalAmount,
-      );
-      Timer(Duration(seconds: 1), () {
-        cart.clear();
-        showSuccess(context);
-      });
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final cart = Provider.of<Cart>(context);
@@ -111,17 +49,7 @@ class CupertinoCartScreen extends StatelessWidget {
                         color: CupertinoColors.activeBlue,
                       ),
                     ),
-                    CupertinoButton(
-                      child: Text(
-                        'ORDER NOW',
-                        style: CupertinoTheme.of(context)
-                            .textTheme
-                            .actionTextStyle,
-                      ),
-                      onPressed: () {
-                        onConfirmOrder(cart, context);
-                      },
-                    )
+                    OrderButton(cart: cart),
                   ],
                 ),
               ),
@@ -144,22 +72,147 @@ class CupertinoCartScreen extends StatelessWidget {
               width: double.infinity,
               color: CupertinoColors.activeBlue,
               child: Center(
-                child: CupertinoButton(
-                  child: Text(
-                    'ORDER NOW',
-                    style: TextStyle(
-                      color: CupertinoColors.white,
-                    ),
-                  ),
-                  onPressed: () {
-                    onConfirmOrder(cart, context);
-                  },
-                ),
+                child:
+                    OrderButton(cart: cart, textColor: CupertinoColors.white),
               ),
             )
           ],
         ),
       ),
+    );
+  }
+}
+
+class OrderButton extends StatefulWidget {
+  final cart;
+  final Color textColor;
+
+  const OrderButton({
+    Key key,
+    this.textColor = CupertinoColors.activeBlue,
+    @required this.cart,
+  }) : super(key: key);
+
+  @override
+  _OrderButtonState createState() => _OrderButtonState();
+}
+
+class _OrderButtonState extends State<OrderButton> {
+  bool _isLoading = false;
+
+  Future<bool> _showConfirmBeforeMakeOrder(BuildContext context) {
+    return showCupertinoDialog(
+      context: context,
+      builder: (context) {
+        return CupertinoAlertDialog(
+          title: Text('Add all cart items to order ?'),
+          // content: Text('It won\'t recover, make sure to do this'),
+          actions: <Widget>[
+            CupertinoDialogAction(
+              isDefaultAction: true,
+              onPressed: () {
+                Navigator.of(context).pop(true);
+              },
+              child: Text('Yes'),
+            ),
+            CupertinoDialogAction(
+              onPressed: () {
+                Navigator.of(context).pop(false);
+              },
+              child: Text('Let me think'),
+            )
+          ],
+        );
+      },
+    );
+  }
+
+  void _showSuccess(BuildContext context) {
+    showCupertinoDialog(
+      context: context,
+      builder: (context) {
+        return CupertinoAlertDialog(
+          title: Text('Success'),
+          // content: Text('It won\'t recover, make sure to do this'),
+          actions: <Widget>[
+            CupertinoDialogAction(
+              isDefaultAction: true,
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Ok'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _showAlertWithError(String error) {
+    showCupertinoDialog(
+      context: context,
+      builder: (context) {
+        return CupertinoAlertDialog(
+          title: Text('Error'),
+          content: Text(error),
+          actions: <Widget>[
+            CupertinoDialogAction(
+              isDefaultAction: true,
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Ok'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _onConfirmOrder(Cart cart, BuildContext context) async {
+    setState(() {
+      _isLoading = true;
+    });
+    final bool isConfirmOrder = await _showConfirmBeforeMakeOrder(context);
+    if (isConfirmOrder) {
+      try {
+        await Provider.of<Orders>(context).addOrder(
+          cart.items.values.toList(),
+          cart.totalAmount,
+        );
+        setState(() {
+          _isLoading = false;
+        });
+        widget.cart.clear();
+        Timer(Duration(seconds: 1), () {
+          cart.clear();
+          _showSuccess(context);
+        });
+      } catch (e) {
+        setState(() {
+          _isLoading = false;
+        });
+        _showAlertWithError(e.toString());
+      }
+    } else {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return CupertinoButton(
+      child: _isLoading
+          ? const CupertinoActivityIndicator(radius: 7)
+          : Text(
+              'ORDER NOW',
+              style: TextStyle(color: widget.textColor),
+            ),
+      onPressed: (widget.cart.items.length <= 0 || _isLoading)
+          ? null
+          : () => _onConfirmOrder(widget.cart, context),
     );
   }
 }
