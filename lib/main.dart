@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 
 import 'package:shop_app/android/materialApp.dart';
 import 'package:shop_app/ios/cupertinoApp.dart';
+import 'package:shop_app/providers/auth.dart';
 import 'package:shop_app/providers/cart.dart';
 import 'package:shop_app/providers/orders.dart';
 import './providers/products.dart';
@@ -20,6 +21,9 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider.value(
+          value: Auth(),
+        ),
+        ChangeNotifierProvider.value(
           value: Products(),
         ),
         ChangeNotifierProvider.value(
@@ -29,8 +33,8 @@ class MyApp extends StatelessWidget {
           value: Orders(),
         ),
       ],
-      child: isIOS ? MyCupertinoApp() : MyMaterialApp(),
-      // child: MyMaterialApp(),
+      // child: isIOS ? MyCupertinoApp() : MyMaterialApp(),
+      child: MyMaterialApp(),
     );
   }
 }

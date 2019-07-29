@@ -1,6 +1,10 @@
 import 'dart:math';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:shop_app/ios/cupertinoApp.dart';
+import 'package:shop_app/providers/auth.dart';
 
 enum AuthMode { Signup, Login }
 
@@ -100,7 +104,7 @@ class _AuthCardState extends State<AuthCard> {
   var _isLoading = false;
   final _passwordController = TextEditingController();
 
-  void _submit() {
+  Future<void> _submit() async {
     if (!_formKey.currentState.validate()) {
       // Invalid!
       return;
@@ -110,9 +114,15 @@ class _AuthCardState extends State<AuthCard> {
       _isLoading = true;
     });
     if (_authMode == AuthMode.Login) {
-      // Log user in
+      // Cupertino-Navigation
+      // Navigator.of(context)
+      //     .push(CupertinoPageRoute(builder: (_) => MyCupertinoTabScaffold()));
     } else {
       // Sign user up
+      await Provider.of<Auth>(context, listen: false).signup(
+        _authData['email'],
+        _authData['password'],
+      );
     }
     setState(() {
       _isLoading = false;
