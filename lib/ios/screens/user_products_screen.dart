@@ -5,8 +5,17 @@ import 'package:shop_app/ios/screens/add_edit_product_screen.dart';
 import 'package:shop_app/ios/widgets/user_product_item.dart';
 import 'package:shop_app/providers/products.dart';
 
-class CupertinoUserProductsScreen extends StatelessWidget {
+class CupertinoUserProductsScreen extends StatefulWidget {
   static const routeName = '/user-products';
+
+  @override
+  _CupertinoUserProductsScreenState createState() =>
+      _CupertinoUserProductsScreenState();
+}
+
+class _CupertinoUserProductsScreenState
+    extends State<CupertinoUserProductsScreen> {
+  bool _isLoading = true;
 
   Future<void> _onRefreshProduct(BuildContext context) async {
     try {
@@ -38,8 +47,23 @@ class CupertinoUserProductsScreen extends StatelessWidget {
   }
 
   @override
+  void initState() {
+    Provider.of<Products>(context, listen: false)
+        .fetchAndSetProducts(true)
+        .then(
+      (_) {
+        setState(() {
+          _isLoading = false;
+        });
+      },
+    );
+
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    // final productData = Provider.of<Products>(context);
+    final productData = Provider.of<Products>(context);
 
     return CupertinoPageScaffold(
       // navigationBar: CupertinoNavigationBar(
@@ -61,71 +85,64 @@ class CupertinoUserProductsScreen extends StatelessWidget {
       // ),
 
       child: SafeArea(
-          top: false,
-          child: FutureBuilder(
-            future: _onRefreshProduct(context),
-            builder: (context, dataSnapshot) {
-              if (dataSnapshot.connectionState == ConnectionState.waiting) {
-                return Center(
-                  child: CupertinoActivityIndicator(),
-                );
-              } else if (dataSnapshot.error != null) {
-                return Center(child: Text('ERRRO'));
-              } else {
-                return Consumer<Products>(
-                  builder: (ctx, productData, _) => Scaffold(
-                    body: CustomScrollView(
-                      // If left unspecified, the [CustomScrollView] appends an
-                      // [AlwaysScrollableScrollPhysics]. Behind the scene, the ScrollableState
-                      // will attach that [AlwaysScrollableScrollPhysics] to the output of
-                      // [ScrollConfiguration.of] which will be a [ClampingScrollPhysics]
-                      // on Android.
-                      // To demonstrate the iOS behavior in this demo and to ensure that the list
-                      // always scrolls, we specifically use a [BouncingScrollPhysics] combined
-                      // with a [AlwaysScrollableScrollPhysics]
-                      physics: const BouncingScrollPhysics(
-                          parent: AlwaysScrollableScrollPhysics()),
-                      slivers: <Widget>[
-                        CupertinoSliverNavigationBar(
-                          automaticallyImplyTitle: false,
-                          largeTitle: const Text('Manage Product'),
-                          // We're specifying a back label here because the previous page
-                          // is a Material page. CupertinoPageRoutes could auto-populate
-                          // these back labels.
-                          previousPageTitle: 'Cupertino',
-                          // trailing: Text('Hi, Supervisor', style: TextStyle(fontSize: 14)),
-                        ),
-                        CupertinoSliverRefreshControl(
-                          onRefresh: () => _onRefreshProduct(context),
-                        ),
-                        SliverSafeArea(
-                          top:
-                              false, // Top safe area is consumed by the navigation bar.
-                          sliver: SliverList(
-                            delegate: SliverChildBuilderDelegate(
-                              (BuildContext context, int index) {
-                                return Column(
-                                  children: <Widget>[
-                                    CupertinoUserProductItem(
-                                      productData.items[index].id,
-                                      productData.items[index].title,
-                                      productData.items[index].imageUrl,
-                                    ),
-                                    Divider(),
-                                  ],
-                                );
-                              },
-                              childCount: productData.items.length,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
+        top: false,
+        child: Scaffold(
+          body: CustomScrollView(
+            // If left unspecified, the [CustomScrollView] appends an
+            // [AlwaysScrollableScrollPhysics]. Behind the scene, the ScrollableState
+            // will attach that [AlwaysScrollableScrollPhysics] to the output of
+            // [ScrollConfiguration.of] which will be a [ClampingScrollPhysics]
+            // on Android.
+            // To demonstrate the iOS behavior in this demo and to ensure that the list
+            // always scrolls, we specifically use a [BouncingScrollPhysics] combined
+            // with a [AlwaysScrollableScrollPhysics]
+            physics: const BouncingScrollPhysics(
+                parent: AlwaysScrollableScrollPhysics()),
+            slivers: <Widget>[
+              CupertinoSliverNavigationBar(
+                automaticallyImplyTitle: false,
+                largeTitle: const Text('Manage Product'),
+                // We're specifying a back label here because the previous page
+                // is a Material page. CupertinoPageRoutes could auto-populate
+                // these back labels.
+                previousPageTitle: 'Cupertino',
+                // trailing: Text('Hi, Supervisor', style: TextStyle(fontSize: 14)),
+              ),
+              CupertinoSliverRefreshControl(
+                onRefresh: () => _onRefreshProduct(context),
+              ),
+              SliverSafeArea(
+                top: false, // Top safe area is consumed by the navigation bar.
+                sliver: SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                    (BuildContext context, int index) {
+                      return _isLoading
+                          ? SizedBox(
+                              width: MediaQuery.of(context).size.width,
+                              height: 200,
+                              child: Center(
+                                child: CupertinoActivityIndicator(),
+                              ),
+                            )
+                          : Column(
+                              children: <Widget>[
+                                CupertinoUserProductItem(
+                                  productData.items[index].id,
+                                  productData.items[index].title,
+                                  productData.items[index].imageUrl,
+                                ),
+                                Divider(),
+                              ],
+                            );
+                    },
+                    childCount: _isLoading ? 1 : productData.items.length,
                   ),
-                );
-              }
-            },
-          )),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
 
       // child: SafeArea(
       //   child: Padding(
