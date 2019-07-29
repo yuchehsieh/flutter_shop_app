@@ -40,8 +40,8 @@ class MyApp extends StatelessWidget {
           ),
         ),
       ],
-      // child: isIOS ? MyCupertinoApp() : MyMaterialApp(),
-      child: MyMaterialApp(),
+      child: isIOS ? MyCupertinoApp() : MyMaterialApp(),
+      // child: MyMaterialApp(),
     );
   }
 }

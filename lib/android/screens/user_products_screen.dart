@@ -11,7 +11,7 @@ class MaterialUserProductsScreen extends StatelessWidget {
   Future<void> _onRefreshProduct(BuildContext context) async {
     try {
       final response = await Provider.of<Products>(context, listen: false)
-          .fetchAndSetProducts();
+          .fetchAndSetProducts(true);
       return response;
     } catch (e) {
       await showDialog(
@@ -39,8 +39,6 @@ class MaterialUserProductsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final productData = Provider.of<Products>(context);
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('Your Product'),
@@ -54,24 +52,42 @@ class MaterialUserProductsScreen extends StatelessWidget {
         ],
       ),
       drawer: AppDrawer(),
-      body: RefreshIndicator(
-        onRefresh: () => _onRefreshProduct(context),
-        child: Padding(
-          padding: const EdgeInsets.all(8),
-          child: ListView.builder(
-            itemCount: productData.items.length,
-            itemBuilder: (_, index) => Column(
-              children: <Widget>[
-                MaterialUserProductItem(
-                  productData.items[index].id,
-                  productData.items[index].title,
-                  productData.items[index].imageUrl,
+      body: FutureBuilder(
+        future: Provider.of<Products>(context, listen: false)
+            .fetchAndSetProducts(true),
+        builder: (context, dataSnapshot) {
+          if (dataSnapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          } else {
+            return Consumer<Products>(
+              builder: (_, productData, child) => RefreshIndicator(
+                onRefresh: () => _onRefreshProduct(context),
+                child: Padding(
+                  padding: const EdgeInsets.all(8),
+                  child: (dataSnapshot.error != null)
+                      ? Center(
+                          child: Text(
+                            'Error to loaded data, drag to refresh later',
+                          ),
+                        )
+                      : ListView.builder(
+                          itemCount: productData.items.length,
+                          itemBuilder: (_, index) => Column(
+                            children: <Widget>[
+                              MaterialUserProductItem(
+                                productData.items[index].id,
+                                productData.items[index].title,
+                                productData.items[index].imageUrl,
+                              ),
+                              Divider(),
+                            ],
+                          ),
+                        ),
                 ),
-                Divider(),
-              ],
-            ),
-          ),
-        ),
+              ),
+            );
+          }
+        },
       ),
     );
   }
