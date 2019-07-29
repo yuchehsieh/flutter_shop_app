@@ -114,6 +114,10 @@ class _AuthCardState extends State<AuthCard> {
       _isLoading = true;
     });
     if (_authMode == AuthMode.Login) {
+      await Provider.of<Auth>(context, listen: false).login(
+        _authData['email'],
+        _authData['password'],
+      );
       // Cupertino-Navigation
       // Navigator.of(context)
       //     .push(CupertinoPageRoute(builder: (_) => MyCupertinoTabScaffold()));
