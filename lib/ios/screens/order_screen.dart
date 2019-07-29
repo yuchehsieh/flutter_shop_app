@@ -8,10 +8,12 @@ class CupertinoOrderScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     // final orderData = Provider.of<Orders>(context);
 
+    final PreferredSizeWidget appBar = CupertinoNavigationBar(
+      middle: const Text('My Order'),
+    );
+
     return CupertinoPageScaffold(
-      navigationBar: CupertinoNavigationBar(
-        middle: const Text('My Order'),
-      ),
+      navigationBar: appBar,
       child: SafeArea(
           child: FutureBuilder(
         future: Provider.of<Orders>(context, listen: false).fetchAndSetOrders(),
@@ -35,23 +37,29 @@ class CupertinoOrderScreen extends StatelessWidget {
                     delegate: SliverChildBuilderDelegate(
                       (BuildContext context, int index) {
                         return (dataSnapshot.error != null)
-                            ? Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: <Widget>[
-                                  Text(
-                                    dataSnapshot.error.toString(),
-                                    textAlign: TextAlign.center,
-                                  ),
-                                  SizedBox(height: 20),
-                                  Text(
-                                    'PULL TO REFRESH',
-                                    style: TextStyle(
-                                      color: CupertinoColors.activeGreen,
+                            ? Container(
+                                width: MediaQuery.of(context).size.width,
+                                height: (MediaQuery.of(context).size.height -
+                                    MediaQuery.of(context).padding.top -
+                                    appBar.preferredSize.height),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: <Widget>[
+                                    Text(
+                                      dataSnapshot.error.toString(),
+                                      textAlign: TextAlign.center,
                                     ),
-                                    // textAlign: TextAlign.center,
-                                  ),
-                                ],
+                                    SizedBox(height: 20),
+                                    Text(
+                                      'PULL TO REFRESH',
+                                      style: TextStyle(
+                                        color: CupertinoColors.activeGreen,
+                                      ),
+                                      // textAlign: TextAlign.center,
+                                    ),
+                                  ],
+                                ),
                               )
                             : CupertinoOrderItem(
                                 orderData.orders[index],

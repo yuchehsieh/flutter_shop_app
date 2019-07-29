@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shop_app/android/screens/add_edit_product_screen.dart';
+import 'package:shop_app/android/screens/auth_creen.dart';
 import 'package:shop_app/android/screens/cart_screen.dart';
 import 'package:shop_app/android/screens/orders_screen.dart';
 
@@ -17,7 +18,7 @@ class MyMaterialApp extends StatelessWidget {
         accentColor: Colors.deepOrange,
         fontFamily: 'Lato',
       ),
-      home: MaterialProductsOverViewScreen(),
+      home: MaterialAuthScreen(),
       routes: {
         MaterialProdcutDetailScreen.routeName: (ctx) =>
             MaterialProdcutDetailScreen(),
