@@ -262,7 +262,9 @@ class _AuthCardState extends State<AuthCard> {
                   height: 20,
                 ),
                 if (_isLoading)
-                  CircularProgressIndicator()
+                  Platform.isIOS
+                      ? CupertinoActivityIndicator(radius: 7)
+                      : CircularProgressIndicator()
                 else
                   RaisedButton(
                     child:
