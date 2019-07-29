@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shop_app/ios/screens/product_detail_screen.dart';
+import 'package:shop_app/providers/auth.dart';
 import 'package:shop_app/providers/cart.dart';
 import 'package:shop_app/providers/product.dart';
 
@@ -10,7 +11,7 @@ class CupertinoProductItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final product = Provider.of<Product>(context, listen: false);
     final cart = Provider.of<Cart>(context, listen: false);
-
+    final authData = Provider.of<Auth>(context, listen: false);
     final snackBar = SnackBar(
       content: Text('Yay! A SnackBar!'),
       action: SnackBarAction(
@@ -61,7 +62,8 @@ class CupertinoProductItem extends StatelessWidget {
                             ? CupertinoIcons.heart_solid
                             : CupertinoIcons.heart,
                       ),
-                      onPressed: () => product.toggleFavoriteStatus(),
+                      onPressed: () =>
+                          product.toggleFavoriteStatus(authData.token),
                       padding: EdgeInsets.only(bottom: 3),
                     ),
                     child: Text('this part is never change'),

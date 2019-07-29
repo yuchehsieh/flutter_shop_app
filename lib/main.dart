@@ -32,12 +32,15 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider.value(
           value: Cart(),
         ),
-        ChangeNotifierProvider.value(
-          value: Orders(),
+        ChangeNotifierProxyProvider<Auth, Orders>(
+          builder: (context, auth, previousOrders) => Orders(
+            auth.token,
+            previousOrders == null ? [] : previousOrders.orders,
+          ),
         ),
       ],
-      child: isIOS ? MyCupertinoApp() : MyMaterialApp(),
-      // child: MyMaterialApp(),
+      // child: isIOS ? MyCupertinoApp() : MyMaterialApp(),
+      child: MyMaterialApp(),
     );
   }
 }

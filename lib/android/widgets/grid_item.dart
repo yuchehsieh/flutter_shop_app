@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shop_app/android/screens/prodcut_detail_screen.dart';
+import 'package:shop_app/providers/auth.dart';
 import 'package:shop_app/providers/cart.dart';
 import 'package:shop_app/providers/product.dart';
 
@@ -15,7 +16,7 @@ class MaterialProductItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final product = Provider.of<Product>(context, listen: false);
     final cart = Provider.of<Cart>(context, listen: false);
-
+    final authData = Provider.of<Auth>(context, listen: false);
     final snackBar = SnackBar(
       content: Text('Yay! A SnackBar!'),
       action: SnackBarAction(
@@ -48,7 +49,7 @@ class MaterialProductItem extends StatelessWidget {
                 product.isFavorite ? Icons.favorite : Icons.favorite_border,
                 color: Theme.of(context).accentColor,
               ),
-              onPressed: () => product.toggleFavoriteStatus(),
+              onPressed: () => product.toggleFavoriteStatus(authData.token),
             ),
           ),
           trailing: IconButton(

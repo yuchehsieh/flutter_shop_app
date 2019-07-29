@@ -109,7 +109,7 @@ class Products with ChangeNotifier {
   }
 
   Future<void> addProduct(Product product) async {
-    const url = 'https://f2ewk11.firebaseio.com/products.json';
+    final url = 'https://f2ewk11.firebaseio.com/products.json?auth=$authToken';
     try {
       final response = await http.post(url,
           body: json.encode({
@@ -140,7 +140,8 @@ class Products with ChangeNotifier {
   }
 
   Future<void> upadteProduct(String productId, Product newProduct) async {
-    final url = 'https://f2ewk11.firebaseio.com/products/$productId.json';
+    final url =
+        'https://f2ewk11.firebaseio.com/products/$productId.json?auth=$authToken';
     final prodIndex = _items.indexWhere((product) => product.id == productId);
     if (prodIndex >= 0) {
       try {
@@ -162,7 +163,8 @@ class Products with ChangeNotifier {
   }
 
   Future<void> deleteProduct(String id) async {
-    final url = 'https://f2ewk11.firebaseio.com/products/$id.json';
+    final url =
+        'https://f2ewk11.firebaseio.com/products/$id.json?auth=$authToken';
     final existingProdIndex = _items.indexWhere((prod) => prod.id == id);
     Product existingProduct = _items[existingProdIndex];
     // store the refrence of the product
