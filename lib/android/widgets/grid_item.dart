@@ -49,7 +49,10 @@ class MaterialProductItem extends StatelessWidget {
                 product.isFavorite ? Icons.favorite : Icons.favorite_border,
                 color: Theme.of(context).accentColor,
               ),
-              onPressed: () => product.toggleFavoriteStatus(authData.token),
+              onPressed: () => product.toggleFavoriteStatus(
+                authData.token,
+                authData.userId,
+              ),
             ),
           ),
           trailing: IconButton(

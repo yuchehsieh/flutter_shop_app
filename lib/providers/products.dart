@@ -42,8 +42,13 @@ class Products with ChangeNotifier {
   ];
 
   final String authToken;
+  final String userId;
 
-  Products(this.authToken, this._items);
+  Products(
+    this.authToken,
+    this.userId,
+    this._items,
+  );
 
   bool _showFavoritesOnly = false;
 
@@ -60,7 +65,8 @@ class Products with ChangeNotifier {
   }
 
   Future<void> fetchAndSetProducts() async {
-    final url = 'https://f2ewk11.firebaseio.com/products.json?auth=$authToken';
+    String url = 'https://f2ewk11.firebaseio.com/products.json?auth=$authToken';
+
     try {
       final response = await http.get(url);
       final List<Product> loadedProducts = [];
@@ -68,6 +74,14 @@ class Products with ChangeNotifier {
       if (extractedData == null) {
         return;
       }
+      // fetch user favorites
+      url =
+          'https://f2ewk11.firebaseio.com/userFavorites/$userId.json?auth=$authToken';
+      final favoriteResponse = await http.get(url);
+      final favoriteData = json.decode(favoriteResponse.body);
+      // print(json.decode(favoriteResponse.body));
+      // {-LkwhOp8GsO0QVZFXUur: true}
+
       extractedData.forEach((key, value) {
         loadedProducts.add(Product(
           title: value['title'],
@@ -75,25 +89,8 @@ class Products with ChangeNotifier {
           id: key,
           imageUrl: value['imageUrl'],
           price: value['price'],
-          isFavorite: value['isFavorite'],
+          isFavorite: favoriteData == null ? false : favoriteData[key] ?? false,
         ));
-
-        /* TRY MYSELFT
-          extractedData[key] = value.putIfAbsent(
-            key,
-            () => Product(
-              isFavorite: false,
-              description: value['description'],
-              id: key,
-              imageUrl: value['imageUrl'],
-              price: value['price'],
-              title: value['title'],
-            ),
-          );
-          _items.add(extractedData[key]);
-          print(extractedData[key]);
-          -> Instance of 'Product' 
-        */
         _items = loadedProducts;
         notifyListeners();
       });
@@ -117,7 +114,6 @@ class Products with ChangeNotifier {
             'imageUrl': product.imageUrl,
             'price': product.price,
             'description': product.description,
-            'isFavorite': product.isFavorite,
           }));
       print(json.decode(response.body));
       // -> {name: -LkgQKNUj9SEK5eMJwyy}

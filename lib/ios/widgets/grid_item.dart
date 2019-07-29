@@ -62,8 +62,10 @@ class CupertinoProductItem extends StatelessWidget {
                             ? CupertinoIcons.heart_solid
                             : CupertinoIcons.heart,
                       ),
-                      onPressed: () =>
-                          product.toggleFavoriteStatus(authData.token),
+                      onPressed: () => product.toggleFavoriteStatus(
+                        authData.token,
+                        authData.userId,
+                      ),
                       padding: EdgeInsets.only(bottom: 3),
                     ),
                     child: Text('this part is never change'),
