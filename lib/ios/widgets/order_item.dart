@@ -30,7 +30,7 @@ class _CupertinoOrderItemState extends State<CupertinoOrderItem> {
       child: Column(
         children: <Widget>[
           ListTile(
-            title: Text('\$${widget.order.amount}'),
+            title: Text('\$${widget.order.amount.toStringAsFixed(2)}'),
             subtitle: Text(
               DateFormat('dd-MM-yyy hh:mm').format(widget.order.dateTime),
             ),
