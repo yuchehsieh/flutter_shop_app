@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 import 'package:shop_app/android/screens/auth_screen.dart';
+import 'package:shop_app/android/screens/splash-screen.dart';
 
 import 'package:shop_app/ios/screens/order_screen.dart';
 import 'package:shop_app/ios/screens/product_detail_screen.dart';
@@ -13,7 +14,16 @@ class MyCupertinoApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<Auth>(
       builder: (context, auth, _) => CupertinoApp(
-        home: auth.isAuth ? MyCupertinoTabScaffold() : MaterialAuthScreen(),
+        home: auth.isAuth
+            ? MyCupertinoTabScaffold()
+            : FutureBuilder(
+                future: auth.tryAutoLogin(),
+                builder: (context, authResultSnapshor) =>
+                    authResultSnapshor.connectionState ==
+                            ConnectionState.waiting
+                        ? MaterialSplashScreen()
+                        : MaterialAuthScreen(),
+              ),
 
         // CupertinoTabScaffold(
         //   tabBar: CupertinoTabBar(

@@ -7,6 +7,7 @@ import 'package:shop_app/android/screens/orders_screen.dart';
 
 import 'package:shop_app/android/screens/prodcut_detail_screen.dart';
 import 'package:shop_app/android/screens/products_overview_screen.dart';
+import 'package:shop_app/android/screens/splash-screen.dart';
 import 'package:shop_app/android/screens/user_products_screen.dart';
 import 'package:shop_app/providers/auth.dart';
 
@@ -23,7 +24,17 @@ class MyMaterialApp extends StatelessWidget {
         ),
         home: auth.isAuth
             ? MaterialProductsOverViewScreen()
-            : MaterialAuthScreen(),
+            : FutureBuilder(
+                future: auth.tryAutoLogin(),
+                builder: (context, authResultSnapshot) =>
+                    (authResultSnapshot.connectionState ==
+                            ConnectionState.waiting)
+                        ? MaterialSplashScreen()
+                        : MaterialAuthScreen(),
+                // when waiting is over
+                // it'll automatically trigger notifierListener
+                // thank to Consumer, will
+              ),
         routes: {
           MaterialProdcutDetailScreen.routeName: (ctx) =>
               MaterialProdcutDetailScreen(),

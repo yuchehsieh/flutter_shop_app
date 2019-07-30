@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shop_app/ios/screens/products_overview.dart';
 import 'package:shop_app/providers/auth.dart';
 
 class CupertinoUserSettingScreen extends StatelessWidget {
@@ -22,6 +23,7 @@ class CupertinoUserSettingScreen extends StatelessWidget {
                   },
                 ),
                 title: Text('Logout'),
+                onTap: () => Provider.of<Auth>(context, listen: false).logout(),
               ),
               Divider(),
             ],
