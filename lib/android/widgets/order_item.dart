@@ -23,7 +23,7 @@ class _MaterialOrderItemState extends State<MaterialOrderItem> {
       child: Column(
         children: <Widget>[
           ListTile(
-            title: Text('\$${widget.order.amount}'),
+            title: Text('\$${widget.order.amount.toStringAsFixed(2)}'),
             subtitle: Text(
               DateFormat('MM-dd -yyy   hh:mm').format(widget.order.dateTime),
             ),

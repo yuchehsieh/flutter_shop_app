@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shop_app/ios/screens/add_edit_product_screen.dart';
+import 'package:shop_app/ios/screens/user_setting_screen.dart';
 import 'package:shop_app/ios/widgets/user_product_item.dart';
 import 'package:shop_app/providers/products.dart';
 
@@ -106,7 +107,32 @@ class _CupertinoUserProductsScreenState
                 // is a Material page. CupertinoPageRoutes could auto-populate
                 // these back labels.
                 previousPageTitle: 'Cupertino',
-                // trailing: Text('Hi, Supervisor', style: TextStyle(fontSize: 14)),
+                trailing: Row(
+                  // mainAxisAlignment: MainAxisAlignment.end,
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    CupertinoButton(
+                      child: Icon(CupertinoIcons.gear),
+                      onPressed: () {
+                        Navigator.of(context).push(
+                          CupertinoPageRoute(
+                            builder: (_) => CupertinoUserSettingScreen(),
+                          ),
+                        );
+                      },
+                    ),
+                    CupertinoButton(
+                      child: Icon(CupertinoIcons.add),
+                      onPressed: () {
+                        Navigator.of(context).push(
+                          CupertinoPageRoute(
+                            builder: (_) => CupertinoAddEditProduct(null),
+                          ),
+                        );
+                      },
+                    ),
+                  ],
+                ),
               ),
               CupertinoSliverRefreshControl(
                 onRefresh: () => _onRefreshProduct(context),
