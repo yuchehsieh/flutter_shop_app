@@ -9,6 +9,7 @@ import 'package:shop_app/android/screens/prodcut_detail_screen.dart';
 import 'package:shop_app/android/screens/products_overview_screen.dart';
 import 'package:shop_app/android/screens/splash-screen.dart';
 import 'package:shop_app/android/screens/user_products_screen.dart';
+import 'package:shop_app/helpers/custom_route.dart';
 import 'package:shop_app/providers/auth.dart';
 
 class MyMaterialApp extends StatelessWidget {
@@ -21,6 +22,12 @@ class MyMaterialApp extends StatelessWidget {
           primarySwatch: Colors.purple,
           accentColor: Colors.deepOrange,
           fontFamily: 'Lato',
+          pageTransitionsTheme: PageTransitionsTheme(
+            builders: {
+              TargetPlatform.iOS: CustomRouteTransitionBuilder(),
+              TargetPlatform.android: CustomRouteTransitionBuilder()
+            },
+          ),
         ),
         home: auth.isAuth
             ? MaterialProductsOverViewScreen()
