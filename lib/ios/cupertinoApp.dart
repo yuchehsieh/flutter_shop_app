@@ -14,6 +14,17 @@ class MyCupertinoApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<Auth>(
       builder: (context, auth, _) => CupertinoApp(
+        // theme: CupertinoThemeData(
+        //   textTheme: CupertinoTextThemeData(
+        //     navLargeTitleTextStyle: CupertinoTheme.of(context)
+        //         .textTheme
+        //         .navLargeTitleTextStyle
+        //         .copyWith(
+        //           color: CupertinoColors.activeBlue,
+        //         ),
+        //   ),
+
+        // ),
         home: auth.isAuth
             ? MyCupertinoTabScaffold()
             : FutureBuilder(

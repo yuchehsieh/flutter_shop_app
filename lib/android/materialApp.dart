@@ -28,6 +28,22 @@ class MyMaterialApp extends StatelessWidget {
               TargetPlatform.android: CustomRouteTransitionBuilder()
             },
           ),
+          // textTheme: ThemeData.light().textTheme.copyWith(
+          //       title: TextStyle(
+          //         fontFamily: 'OpenSans',
+          //         fontSize: 18,
+          //         fontWeight: FontWeight.w400,
+          //       ),
+          //       button: TextStyle(color: Colors.white),
+          //     ),
+          // appBarTheme: AppBarTheme(
+          //   textTheme: ThemeData.light().textTheme.copyWith(
+          //         title: TextStyle(
+          //           fontFamily: 'OpenSans',
+          //           fontSize: 20,
+          //         ),
+          //       ),
+          // ),
         ),
         home: auth.isAuth
             ? MaterialProductsOverViewScreen()
