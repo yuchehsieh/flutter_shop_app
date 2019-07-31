@@ -40,7 +40,16 @@ class MaterialProductItem extends StatelessWidget {
               arguments: product.id,
             );
           },
-          child: Image.network(product.imageUrl, fit: BoxFit.cover),
+          child: FadeInImage(
+            placeholder: AssetImage('assets/images/product-placeholder.png'),
+            image: NetworkImage(product.imageUrl),
+            fit: BoxFit.cover,
+
+            // Image.asset('assets/images/product-placeholder.png'),
+            // Image.network(
+            //   product.imageUrl,
+            // ),
+          ),
         ),
         footer: GridTileBar(
           leading: Consumer<Product>(
