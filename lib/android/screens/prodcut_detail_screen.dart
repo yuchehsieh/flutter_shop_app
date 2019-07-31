@@ -52,6 +52,7 @@ class _MaterialProdcutDetailScreenState
           SliverAppBar(
             expandedHeight: 300,
             pinned: true,
+            // floating: true,
             flexibleSpace: FlexibleSpaceBar(
               title: Text(loadedProduct.title),
               background: Hero(
