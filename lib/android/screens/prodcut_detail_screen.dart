@@ -7,8 +7,33 @@ enum FilterOptions {
   All,
 }
 
-class MaterialProdcutDetailScreen extends StatelessWidget {
+class MaterialProdcutDetailScreen extends StatefulWidget {
   static const routeName = '/product-detail';
+
+  @override
+  _MaterialProdcutDetailScreenState createState() =>
+      _MaterialProdcutDetailScreenState();
+}
+
+class _MaterialProdcutDetailScreenState
+    extends State<MaterialProdcutDetailScreen>
+    with SingleTickerProviderStateMixin {
+  AnimationController _controller;
+  bool _isInit = true;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_isInit) {
+      _controller = AnimationController(
+        vsync: this,
+        duration: Duration(milliseconds: 300),
+      );
+      _controller.forward();
+    }
+
+    _isInit = false;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,51 +67,63 @@ class MaterialProdcutDetailScreen extends StatelessWidget {
             delegate: SliverChildListDelegate(
               [
                 const SizedBox(height: 10),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Text(
-                      '\$${loadedProduct.price}',
-                      style: const TextStyle(color: Colors.grey, fontSize: 20),
+                SlideTransition(
+                  position: Tween<Offset>(
+                    begin: Offset(0, 3),
+                    end: Offset.zero,
+                  ).animate(
+                    CurvedAnimation(
+                      curve: Curves.easeIn,
+                      parent: _controller,
                     ),
-                    const SizedBox(height: 10),
-                    Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.symmetric(horizontal: 10),
-                      child: Text(
-                        '${loadedProduct.description}',
-                        textAlign: TextAlign.center,
-                        softWrap: true,
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Text(
+                        '\$${loadedProduct.price}',
+                        style:
+                            const TextStyle(color: Colors.grey, fontSize: 20),
                       ),
-                    ),
-                    PopupMenuButton(
-                      // onCanceled: ,
-                      offset: Offset(-30, 50),
-                      // enabled: false,
-                      // elevation: 5,
-                      // initialValue: FilterOptions.Favorites,
-                      onSelected: (FilterOptions selectedValue) {
-                        // setState(() {
-                        //   if (selectedValue == FilterOptions.Favorites) {
-                        //     _showOnlyFavorites = true;
-                        //   } else {
-                        //     _showOnlyFavorites = false;
-                        //   }
-                        // });
-                      },
-                      itemBuilder: (_) => [
-                        PopupMenuItem(
-                          child: Text('Only Favorites'),
-                          value: FilterOptions.Favorites,
+                      const SizedBox(height: 10),
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                        child: Text(
+                          '${loadedProduct.description}',
+                          textAlign: TextAlign.center,
+                          softWrap: true,
                         ),
-                        PopupMenuItem(
-                          child: Text('Show All'),
-                          value: FilterOptions.All,
-                        ),
-                      ],
-                      icon: Icon(Icons.more_vert),
-                    ),
-                  ],
+                      ),
+                      PopupMenuButton(
+                        // onCanceled: ,
+                        offset: Offset(-30, 50),
+                        // enabled: false,
+                        // elevation: 5,
+                        // initialValue: FilterOptions.Favorites,
+                        onSelected: (FilterOptions selectedValue) {
+                          // setState(() {
+                          //   if (selectedValue == FilterOptions.Favorites) {
+                          //     _showOnlyFavorites = true;
+                          //   } else {
+                          //     _showOnlyFavorites = false;
+                          //   }
+                          // });
+                        },
+                        itemBuilder: (_) => [
+                          PopupMenuItem(
+                            child: Text('Only Favorites'),
+                            value: FilterOptions.Favorites,
+                          ),
+                          PopupMenuItem(
+                            child: Text('Show All'),
+                            value: FilterOptions.All,
+                          ),
+                        ],
+                        icon: Icon(Icons.more_vert),
+                      ),
+                    ],
+                  ),
                 ),
                 SizedBox(height: 800),
               ],

@@ -1,8 +1,10 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 import 'package:shop_app/providers/products.dart';
 
-class CupertinoProductDetailScreen extends StatelessWidget {
+class CupertinoProductDetailScreen extends StatefulWidget {
   static const routeName = '/product-detail';
 
   final String productId;
@@ -10,11 +12,38 @@ class CupertinoProductDetailScreen extends StatelessWidget {
   CupertinoProductDetailScreen(this.productId);
 
   @override
+  _CupertinoProductDetailScreenState createState() =>
+      _CupertinoProductDetailScreenState();
+}
+
+class _CupertinoProductDetailScreenState
+    extends State<CupertinoProductDetailScreen>
+    with SingleTickerProviderStateMixin {
+  bool _isInit = true;
+
+  AnimationController _controller;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_isInit) {
+      _controller = AnimationController(
+        vsync: this,
+        duration: Duration(milliseconds: 200),
+      );
+      Timer(Duration(milliseconds: 165), _controller.forward);
+      // _controller.forward();
+    }
+
+    _isInit = false;
+  }
+
+  @override
   Widget build(BuildContext context) {
     final loadedProduct = Provider.of<Products>(
       context,
       listen: false,
-    ).findById(productId);
+    ).findById(widget.productId);
 
     return CupertinoPageScaffold(
       // navigationBar: CupertinoNavigationBar(
@@ -63,19 +92,35 @@ class CupertinoProductDetailScreen extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 10),
-                  Text(
-                    '\$${loadedProduct.price}',
-                    style: const TextStyle(
-                        color: CupertinoColors.inactiveGray, fontSize: 20),
-                  ),
-                  const SizedBox(height: 10),
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
-                    child: Text(
-                      '${loadedProduct.description}',
-                      textAlign: TextAlign.center,
-                      softWrap: true,
+                  SlideTransition(
+                    position: Tween<Offset>(
+                      begin: Offset(0, 1),
+                      end: Offset.zero,
+                    ).animate(
+                      CurvedAnimation(
+                        curve: Curves.easeIn,
+                        parent: _controller,
+                      ),
+                    ),
+                    child: Column(
+                      children: <Widget>[
+                        Text(
+                          '\$${loadedProduct.price}',
+                          style: const TextStyle(
+                              color: CupertinoColors.inactiveGray,
+                              fontSize: 20),
+                        ),
+                        const SizedBox(height: 10),
+                        Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                          child: Text(
+                            '${loadedProduct.description}',
+                            textAlign: TextAlign.center,
+                            softWrap: true,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ],
