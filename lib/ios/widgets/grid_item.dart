@@ -39,8 +39,22 @@ class CupertinoProductItem extends StatelessWidget {
               );
             },
             child: Container(
-                width: double.infinity,
-                child: Image.network(product.imageUrl, fit: BoxFit.cover)),
+              width: double.infinity,
+              child: Hero(
+                tag: product.id,
+                child: FadeInImage(
+                  placeholder:
+                      AssetImage('assets/images/product-placeholder.png'),
+                  image: NetworkImage(product.imageUrl),
+                  fit: BoxFit.cover,
+
+                  // child: Image.network(
+                  //   product.imageUrl,
+                  //   fit: BoxFit.cover,
+                  // ),
+                ),
+              ),
+            ),
           ),
           Positioned(
             bottom: 0,
